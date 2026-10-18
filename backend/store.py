@@ -106,17 +106,29 @@ class Store:
         return {'id':user_id,'username':username,'role':role,'site':site,'display_name':display_name}
 
     def enforce_live_budget(self, c, session_id):
-        """Bound paid live-AI use on public prototypes. Counts started work, including failures."""
+        """Bound paid live-AI use on public prototypes. Counts started work, including failures.
+
+        A recording ticket counts once its upload began (operation_expires is set), so issuing and
+        cancelling tickets cannot use up the shared allowance without any provider call.
+        """
         settings, now = self.settings, time.time()
         if settings.live_session_hourly_limit:
-            used = c.execute('SELECT (SELECT COUNT(*) FROM ec_recording_tickets WHERE session_id=? AND created>=?)+(SELECT COUNT(*) FROM ec_demo_live_checks WHERE session_id=? AND created>=?)',(session_id,now-3600,session_id,now-3600)).fetchone()[0]
+            used = c.execute('SELECT (SELECT COUNT(*) FROM ec_recording_tickets WHERE session_id=? AND created>=? AND operation_expires IS NOT NULL)+(SELECT COUNT(*) FROM ec_demo_live_checks WHERE session_id=? AND created>=?)',(session_id,now-3600,session_id,now-3600)).fetchone()[0]
             if used >= settings.live_session_hourly_limit:
                 return 'This session reached its hourly live AI limit. Try again later; the prerecorded demos remain available.'
         if settings.live_daily_limit:
-            used = c.execute('SELECT (SELECT COUNT(*) FROM ec_recording_tickets WHERE created>=?)+(SELECT COUNT(*) FROM ec_demo_live_checks WHERE created>=?)',(now-86400,now-86400)).fetchone()[0]
+            used = c.execute('SELECT (SELECT COUNT(*) FROM ec_recording_tickets WHERE created>=? AND operation_expires IS NOT NULL)+(SELECT COUNT(*) FROM ec_demo_live_checks WHERE created>=?)',(now-86400,now-86400)).fetchone()[0]
             if used >= settings.live_daily_limit:
                 return 'The daily live AI limit for this prototype has been reached. The prerecorded demos remain available.'
         return None
+
+    def audio_storage_full(self, c, incoming):
+        """True when retained private audio plus an incoming recording would exceed the configured cap."""
+        limit = self.settings.stored_audio_limit_bytes
+        if not limit:
+            return False
+        used = c.execute('SELECT COALESCE(SUM(r.size),0) FROM ec_recordings r LEFT JOIN ec_purges p ON p.recording_id=r.id WHERE p.recording_id IS NULL').fetchone()[0]
+        return used + incoming > limit
 
     def audit(self, c, task_id, actor_id, action, version=None, detail=None):
         c.execute('INSERT INTO ec_audit(task_id,actor_id,action,version,detail,created) VALUES(?,?,?,?,?,?)', (task_id,actor_id,action,version,encode(detail or {}),time.time()))

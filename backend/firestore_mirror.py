@@ -15,6 +15,7 @@ import threading
 import time
 
 from .store import uid
+import hashlib
 
 log = logging.getLogger('echocheck.mirror')
 
@@ -24,6 +25,18 @@ EVENT_TABLES = (
     ('ec_demo_events', 'echocheck_demo_events'),
 )
 BATCH_ROWS = 100  # two tables plus their snapshots stay under Firestore's 500-write batch limit
+# Free-text identifiers typed for a worker stay in SQLite; Firestore only gets a stable pseudonym.
+PSEUDONYMISED_KEYS = ('worker_reference',)
+
+
+def _redact(detail):
+    if not isinstance(detail, dict):
+        return detail
+    redacted = dict(detail)
+    for key in PSEUDONYMISED_KEYS:
+        if isinstance(redacted.get(key), str):
+            redacted[key] = 'sha256:' + hashlib.sha256(redacted[key].casefold().encode('utf-8')).hexdigest()[:16]
+    return redacted
 
 
 def firebase_client(project):
@@ -78,7 +91,7 @@ class FirestoreMirror:
                     row = dict(row)
                     document = {'database_id': self.database_id, 'source_table': table, 'row_id': row['id'],
                                 'action': row['action'], 'version': row['version'], 'actor_id': row['actor_id'],
-                                'detail': json.loads(row['detail'] or '{}'), 'created': _when(row['created']),
+                                'detail': _redact(json.loads(row['detail'] or '{}')), 'created': _when(row['created']),
                                 'mode': self.store.settings.mode}
                     if table == 'ec_audit':
                         document['task_id'] = row['task_id']
@@ -112,9 +125,9 @@ class FirestoreMirror:
                         'source': 'scripted_demo', 'updated': _when(run['updated'])}))
             return writes, cursors
 
-    def flush(self):
+    def flush(self, wait=True):
         """Copy newly committed rows. Returns the number of documents written; never raises."""
-        if not self._lock.acquire(timeout=10):
+        if not (self._lock.acquire(timeout=10) if wait else self._lock.acquire(blocking=False)):
             return 0
         try:
             total = 0

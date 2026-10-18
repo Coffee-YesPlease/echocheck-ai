@@ -26,6 +26,9 @@ class Settings:
     live_session_hourly_limit: int = 0
     firestore_mirror: bool = False
     firestore_project: str = ''
+    # Cloud Run's filesystem is memory: bound retained private audio (0 disables) and prototype task count.
+    stored_audio_limit_bytes: int = 256 * 1024 * 1024
+    prototype_task_limit: int = 300
 
     def __post_init__(self):
         self.db_path = Path(self.db_path)
@@ -43,6 +46,8 @@ class Settings:
                 raise ValueError('Production origins must use HTTPS')
         if min(self.live_daily_limit, self.live_session_hourly_limit) < 0:
             raise ValueError('Live AI limits cannot be negative')
+        if min(self.stored_audio_limit_bytes, self.prototype_task_limit) < 0:
+            raise ValueError('Storage and task limits cannot be negative')
         if self.mode not in ('development', 'production', 'test', 'prototype'):
             raise ValueError('Mode must be development, production, test, or prototype')
         if min(self.session_seconds, self.recording_retention_seconds, self.ticket_seconds, self.processing_seconds) <= 0:
@@ -89,4 +94,6 @@ class Settings:
             live_session_hourly_limit=int(os.environ.get('LIVE_SESSION_HOURLY_LIMIT', '30')),
             firestore_mirror=os.environ.get('FIRESTORE_MIRROR_ENABLED', '').lower() == 'true',
             firestore_project=os.environ.get('FIRESTORE_PROJECT_ID') or os.environ.get('GOOGLE_CLOUD_PROJECT', ''),
+            stored_audio_limit_bytes=int(os.environ.get('STORED_AUDIO_LIMIT_MB', '256')) * 1024 * 1024,
+            prototype_task_limit=int(os.environ.get('PROTOTYPE_TASK_LIMIT', '300')),
         )

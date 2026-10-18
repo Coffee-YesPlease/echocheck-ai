@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="referrer" content="same-origin">
+  <meta name="referrer" content="no-referrer">
   <title>EchoCheck AI · Clarity before action</title>
-  <link rel="stylesheet" href="/assets/style.css?v=0.8">
-  <script defer src="/assets/flow.js?v=0.8"></script>
-  <script defer src="/assets/app.js?v=0.8"></script>
+  <link rel="stylesheet" href="/assets/style.css?v=0.8.1">
+  <script defer src="/assets/flow.js?v=0.8.1"></script>
+  <script defer src="/assets/app.js?v=0.8.1"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to workspace</a>
@@ -18,7 +18,7 @@
       <div class="session hidden" id="session"><span id="sessionName"></span><button class="text-button" id="logoutButton" type="button">Sign out</button></div>
     </header>
     <main id="main">
-      <div class="environment" id="environment" role="status"><span id="environmentText">Checking the service…</span><details class="info compact hidden" id="prototypeInfo"><summary aria-label="About prototype mode">i</summary><p>Explore the workflow using the three prototype accounts. Admin can switch views without signing out. Release to real work is disabled in this preview.</p></details></div>
+      <div class="environment" id="environment" role="status"><span id="environmentText">Checking the service…</span><details class="info compact hidden" id="prototypeInfo"><summary aria-label="About prototype mode">i</summary><p>Explore the workflow using the three prototype accounts. Admin can switch views without signing out. The accounts are shared: anyone who signs in can see tasks and play recordings, so use test voices and no personal details. Release to real work is disabled in this preview.</p></details></div>
       <div class="view-as-panel hidden" id="viewAsPanel"><div><label for="viewAsSelect">View as</label><p>Switch roles while staying signed in as Admin.</p></div><select id="viewAsSelect" aria-label="View as"><option value="">Admin</option></select></div>
       <div class="notice hidden" id="notice" role="alert" tabindex="-1"><span id="noticeText"></span><button type="button" class="icon-button" id="dismissNotice" aria-label="Dismiss message">×</button></div>
       <section id="loginPage" class="login-wrap hidden" aria-labelledby="loginTitle">

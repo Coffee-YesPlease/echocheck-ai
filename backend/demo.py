@@ -10,18 +10,18 @@ from typing import Literal, Optional
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
+from pydantic import Field, StrictBool, StrictInt
 
 from .audio import InvalidAudio, validate_audio
 from .config import ROOT
+from .inputs import StrictBody
 from .store import encode, timestamp, uid
 from .verification import InvalidProviderResponse, ProviderUnavailable, validate_evaluation, validate_requirements
 
 VARIANTS = ('correct','incorrect','corrected','still_incorrect')
 LABELS = {'correct':'Correct response','incorrect':'Incorrect response','corrected':'Corrected response','still_incorrect':'Still incorrect response'}
 
-class DemoBody(BaseModel):
-    model_config = ConfigDict(extra='forbid')
+class DemoBody(StrictBody):
     expected_version: StrictInt = Field(ge=1)
 
 class DemoAttempt(DemoBody):
@@ -35,11 +35,11 @@ class DemoApprove(DemoBody):
     attempt_id: str = Field(min_length=1,max_length=80)
     approved: StrictBool = True
 
-class DemoLiveCheck(BaseModel):
-    model_config = ConfigDict(extra='forbid')
+class DemoLiveCheck(StrictBody):
     variant: Literal['correct','incorrect','corrected','still_incorrect']
 
 LIVE_CHECK_SECONDS = 75
+HISTORY_LIMIT = 60  # newest events shown per practice run; the full log stays in SQLite and Firestore
 LIVE_DISCLOSURE = ('Live Gemini check of a synthetic sample voice. Practice only: it is not worker evidence, '
                    'does not change this demo and cannot release work.')
 
@@ -165,7 +165,7 @@ class DemoService:
                           'audio_url':self.audio_url(run,row['variant']),'ack_id':row['ack_id'],'created':timestamp(row['created']),
                           'source':'scripted_demo','synthetic_audio':True}
         history = [{'id':row['id'],'action':row['action'],'actor_id':row['actor_id'],'principal_id':row['principal_id'],'version':row['version'],
-                    'detail':json.loads(row['detail']),'created':timestamp(row['created'])} for row in c.execute('SELECT * FROM ec_demo_events WHERE run_id=? ORDER BY id',(run['id'],))]
+                    'detail':json.loads(row['detail']),'created':timestamp(row['created'])} for row in reversed(c.execute('SELECT * FROM ec_demo_events WHERE run_id=? ORDER BY id DESC LIMIT ?',(run['id'],HISTORY_LIMIT)).fetchall())]
         live_checks = [self.live_view(scenario,dict(row)) for row in c.execute("SELECT * FROM ec_demo_live_checks WHERE run_id=? AND status='completed' ORDER BY created DESC LIMIT 4",(run['id'],))]
         return {'id':run['id'],'scenario_id':run['scenario_id'],'catalog_id':run['catalog_id'],'kind':'prerecorded_demo','source':'scripted_demo',
                 'title':scenario['title'],'status':run['status'],'version':run['version'],'generation':run['generation'],

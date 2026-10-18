@@ -134,20 +134,28 @@ def test_session_and_daily_limits_bound_live_checks(tmp_path):
         assert daily.status_code == 429 and 'daily' in daily.json()['detail']
 
 
-def test_recording_tickets_share_the_live_budget(tmp_path):
+def test_recording_uploads_share_the_live_budget_but_cancelled_tickets_do_not(tmp_path):
     with ExitStack() as stack:
         settings = Settings(mode='prototype', db_path=tmp_path / 'p.db', audio_dir=tmp_path / 'a', live_session_hourly_limit=1)
-        prototype = PrototypeRig(create_app(settings=settings, provider=FakeProvider()), FakeProvider(), stack)
+        provider = FakeProvider()
+        prototype = PrototypeRig(create_app(settings=settings, provider=provider), provider, stack)
         task = prototype.create()
-        prototype.ticket(task['id'], 'instruction')
-        current = prototype.task(task['id'])
-        cancel = prototype.command(f"/api/recording-tickets/{current['active_ticket']['id']}/cancel", {'expected_version': current['version']})
-        assert cancel.status_code == 200, cancel.text
         disclosure = prototype.client.get('/api/health').json()['recording_disclosure']
-        response = prototype.command(f"/api/tasks/{task['id']}/recording-tickets", {
-            'expected_version': cancel.json()['version'], 'purpose': 'instruction', 'consent_accepted': True,
-            'consent_version': disclosure['consent_version'], 'consent_policy_id': disclosure['policy_id']})
-        assert response.status_code == 429
+
+        def request_ticket(version):
+            return prototype.command(f"/api/tasks/{task['id']}/recording-tickets", {
+                'expected_version': version, 'purpose': 'instruction', 'consent_accepted': True,
+                'consent_version': disclosure['consent_version'], 'consent_policy_id': disclosure['policy_id']})
+
+        # Issuing and cancelling makes no provider call, so a loop of it cannot drain the shared allowance.
+        for _ in range(3):
+            current = prototype.task(task['id'])
+            assert request_ticket(current['version']).status_code == 200
+            current = prototype.task(task['id'])
+            cancel = prototype.command(f"/api/recording-tickets/{current['active_ticket']['id']}/cancel", {'expected_version': current['version']})
+            assert cancel.status_code == 200, cancel.text
+        prototype.record(task['id'], 'instruction', 'Pack exactly twelve cartons.')
+        assert request_ticket(prototype.task(task['id'])['version']).status_code == 429
 
 
 def test_live_check_route_is_absent_outside_prototype(tmp_path):
@@ -155,3 +163,17 @@ def test_live_check_route_is_absent_outside_prototype(tmp_path):
     from fastapi.testclient import TestClient
     with TestClient(app, base_url='https://testserver', headers={'Origin': 'https://testserver'}) as client:
         assert client.post(BASE + '/demo_x/live-check', json={'variant': 'correct'}).status_code == 404
+
+
+def test_tickets_issued_in_advance_cannot_exceed_the_budget_at_upload(tmp_path):
+    with ExitStack() as stack:
+        settings = Settings(mode='prototype', db_path=tmp_path / 'p.db', audio_dir=tmp_path / 'a', live_session_hourly_limit=1)
+        provider = FakeProvider()
+        prototype = PrototypeRig(create_app(settings=settings, provider=provider), provider, stack)
+        first, second = prototype.create(), prototype.create()
+        first_ticket, second_ticket = prototype.ticket(first['id'], 'instruction'), prototype.ticket(second['id'], 'instruction')
+        assert prototype.upload(first['id'], first_ticket, provider.speech('Pack exactly twelve cartons.')).status_code == 200
+        before = provider.sequence
+        limited = prototype.upload(second['id'], second_ticket, provider.speech('Pack exactly ten cartons.'))
+        assert limited.status_code == 429 and 'hourly' in limited.json()['detail']
+        assert prototype.task(second['id'])['active_ticket']['status'] == 'issued'  # nothing was consumed or sent

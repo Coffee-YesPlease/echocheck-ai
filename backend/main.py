@@ -6,30 +6,37 @@ import hmac
 import json
 from pathlib import Path
 import sqlite3
+import threading
 import time
 from typing import Literal, Optional
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictBool
+from pydantic import Field, StrictInt, StrictBool
 
 from .auth import DUMMY_PASSWORD_HASH, token, token_hash, verify_password
 from .audio import ALLOWED_MIME, MAX_AUDIO_BYTES, InvalidAudio, save_private_audio, validate_audio
 from .config import ROOT, Settings
 from .gemini_adapter import GeminiProvider, InvalidProviderResponse, validate_evaluation, validate_requirements
+from .inputs import BodyLimit, StrictBody
 from .verification import validate_extraction
 from .store import Store, encode, timestamp, uid
 from .prototype import bootstrap_prototype, DISPLAY_ROLES
 
 SESSION_COOKIE = 'ec_session'
 DEVICE_COOKIE = 'ec_device'
+JSON_BODY_LIMIT = 512 * 1024
+# One CPU-heavy password hash at a time keeps a sign-in flood from stalling every other request.
+PASSWORD_GATE_SECONDS = 3
+CONCURRENT_UPLOADS = 3
 
 class ConsentChanged(InvalidAudio):
     pass
 
-class Body(BaseModel):
-    model_config = ConfigDict(extra='forbid')
+class Body(StrictBody):
+    pass
 
 class Login(Body):
     username: str = Field(min_length=1,max_length=80)
@@ -80,6 +87,36 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
     app.state.settings = settings
     app.state.store = store
     app.state.provider = provider
+    password_gate = threading.BoundedSemaphore(1)
+    verified_logins = {}
+    uploads_in_flight = [0]
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_failed(request, exc):
+        # Never echo submitted values: they may be huge, or unencodable text that would turn a 422 into a 500.
+        def safe(part):
+            return part if isinstance(part, int) else str(part).encode('utf-8', 'replace').decode('utf-8')
+        errors = [{'type': error.get('type'), 'loc': [safe(part) for part in error.get('loc', ())], 'msg': safe(error.get('msg', 'Invalid request'))}
+                  for error in exc.errors()]
+        return JSONResponse({'detail': errors}, status_code=422)
+
+    def check_password(password, encoded):
+        # Prototype passwords are published on the sign-in page. Remembering a correct preset skips
+        # repeated 600k-round hashing, so real sign-ins stay fast while random guesses queue at the gate.
+        key = (encoded, hashlib.sha256(password.encode('utf-8')).hexdigest())
+        if settings.mode == 'prototype' and verified_logins.get(key):
+            return True
+        if not password_gate.acquire(timeout=PASSWORD_GATE_SECONDS):
+            raise HTTPException(429,'Sign-in is busy. Try again in a few seconds.',headers={'Retry-After':'5'})
+        try:
+            valid = verify_password(password, encoded)
+        finally:
+            password_gate.release()
+        if valid and settings.mode == 'prototype':
+            if len(verified_logins) >= 16:
+                verified_logins.clear()
+            verified_logins[key] = True
+        return valid
 
     @app.middleware('http')
     async def safety_headers(request, call_next):
@@ -103,10 +140,15 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
         if mirror is not None and request.method == 'POST' and request.url.path.startswith('/api/'):
             # Copy committed history before the request ends; Cloud Run may throttle CPU afterwards.
             try:
-                await asyncio.wait_for(asyncio.to_thread(mirror.flush),timeout=4)
+                # Never queue behind a running flush: the background loop picks up anything left.
+                await asyncio.wait_for(asyncio.to_thread(mirror.flush,False),timeout=4)
             except asyncio.TimeoutError:
                 pass
         return response
+
+    # Outermost user middleware: oversized bodies are refused before anything buffers or parses them.
+    app.add_middleware(BodyLimit,default_limit=JSON_BODY_LIMIT,
+                       path_limits=((lambda path: path.startswith('/api/tasks/') and '/recordings/' in path, MAX_AUDIO_BYTES+1024*1024),))
 
     def session(request, c, mutation=False, allow_admin=False):
         raw = request.cookies.get(SESSION_COOKIE, '')
@@ -120,7 +162,8 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
         device_row = c.execute('SELECT id FROM ec_devices WHERE token_hash=?',(token_hash(device),)).fetchone() if device else None
         if not device_row or device_row['id'] != row['device_id']:
             raise HTTPException(401,'Sign in again on this device.')
-        if mutation and not hmac.compare_digest(request.headers.get('x-csrf-token',''),row['csrf_token']):
+        # Compare bytes: compare_digest rejects non-ASCII str, which would otherwise surface as a server error.
+        if mutation and not hmac.compare_digest(request.headers.get('x-csrf-token','').encode('utf-8'),row['csrf_token'].encode('utf-8')):
             raise HTTPException(403,'Refresh your session before making this change.')
         actor = dict(row)
         profile = c.execute('SELECT persona FROM ec_demo_profiles WHERE user_id=?',(actor['id'],)).fetchone()
@@ -466,7 +509,7 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
             row = c.execute('SELECT * FROM ec_users WHERE username=?',(username,)).fetchone()
         if limited:
             raise HTTPException(429,'Too many sign-in attempts. Try again in 15 minutes.',headers={'Retry-After':'900'})
-        valid = verify_password(body.password,row['password_hash'] if row else DUMMY_PASSWORD_HASH)
+        valid = check_password(body.password,row['password_hash'] if row else DUMMY_PASSWORD_HASH)
         with store.transaction() as c:
             demo_account = c.execute('SELECT persona FROM ec_demo_profiles WHERE user_id=?',(row['id'],)).fetchone() if row else None
         if not row or not valid or not row['active'] or (demo_account and settings.mode != 'prototype') or (settings.mode == 'prototype' and not demo_account):
@@ -569,6 +612,8 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
             title = body.title.strip()
             if len(title) < 3:
                 raise HTTPException(422,'Enter a descriptive task title.')
+            if settings.mode == 'prototype' and settings.prototype_task_limit and c.execute('SELECT COUNT(*) FROM ec_tasks WHERE site=?',(actor['site'],)).fetchone()[0] >= settings.prototype_task_limit:
+                raise HTTPException(429,'This prototype has reached its task limit. The prerecorded demos remain available.')
             task_id,now = uid(),time.time()
             c.execute('INSERT INTO ec_tasks(id,title,supervisor_id,worker_id,site,version,instruction_revision,status,created,updated) VALUES(?,?,?,?,?,1,1,?,?,?)',(task_id,title,actor['id'],worker['id'],actor['site'],'draft',now,now))
             store.audit(c,task_id,actor['id'],'task_created',1,audit_details(actor,{'worker_id':worker['id']}))
@@ -605,6 +650,8 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
             limit = store.enforce_live_budget(c,actor['session_id'])
             if limit:
                 raise HTTPException(429,limit)
+            if store.audio_storage_full(c,MAX_AUDIO_BYTES):
+                raise HTTPException(503,'Recording storage for this prototype is full. Try again later; the prerecorded demos remain available.')
             task = expire_active(c,task)
             if task['active_ticket_id']:
                 raise HTTPException(409,'Finish or cancel the current recording before starting another.')
@@ -704,6 +751,16 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
 
     @app.post('/api/tasks/{task_id}/recordings/{ticket_id}')
     async def upload_recording(task_id: str,ticket_id: str,request: Request):
+        # Each upload buffers audio several times in memory; refuse early, before the ticket is consumed.
+        if uploads_in_flight[0] >= CONCURRENT_UPLOADS:
+            raise HTTPException(503,'Other recordings are being processed. Try again in a moment.',headers={'Retry-After':'10'})
+        uploads_in_flight[0] += 1
+        try:
+            return await process_upload(task_id,ticket_id,request)
+        finally:
+            uploads_in_flight[0] -= 1
+
+    async def process_upload(task_id,ticket_id,request):
         try:
             expected_version = int(request.headers.get('x-expected-version',''))
         except ValueError:
@@ -717,6 +774,11 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
                 raise HTTPException(404,'Recording ticket not found.')
             if ticket['status'] != 'issued' or task['active_ticket_id'] != ticket_id or ticket['version'] != expected_version or ticket['revision'] != task['instruction_revision'] or ticket['ack_id'] != task['ack_id']:
                 raise HTTPException(409,'This recording ticket is no longer current. Record again.')
+            # Tickets count against the live budget once their upload starts, so check again here:
+            # tickets issued in advance on several tasks cannot add up past the limit.
+            limit = store.enforce_live_budget(c,actor['session_id'])
+            if limit:
+                raise HTTPException(429,limit)
             if ticket['expires'] <= time.time():
                 # Persist the failure below without exposing an old release state.
                 expired = True
@@ -759,6 +821,9 @@ def create_app(settings=None, provider=None, mirror_client_factory=None):
                 return b''.join(chunks)
             data = await asyncio.wait_for(read_bounded_body(),timeout=settings.processing_seconds)
             digest = await asyncio.to_thread(validate_audio,data,mime)
+            with store.transaction() as c:
+                if store.audio_storage_full(c,len(data)):
+                    raise InvalidAudio('Recording storage for this prototype is full. Try again later.')
             # Shield the save job so request cancellation cannot discard the filename
             # while its worker thread continues writing private audio.
             save_job = asyncio.create_task(asyncio.to_thread(save_private_audio,settings.audio_dir,data))
