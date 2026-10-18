@@ -14,7 +14,7 @@ MODEL="${GEMINI_MODEL:?Set GEMINI_MODEL to a Gemini model that accepts audio and
 [ -n "$PROJECT" ] || { echo "Set a project: gcloud config set project <PROJECT_ID>" >&2; exit 1; }
 
 NUMBER="$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')"
-RUNTIME_SA="${NUMBER}-compute@developer.gserviceaccount.com"
+RUNTIME_SA="echocheck-run@${PROJECT}.iam.gserviceaccount.com"
 ORIGIN="https://${SERVICE}-${NUMBER}.${REGION}.run.app"
 
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com \
@@ -24,7 +24,11 @@ if ! gcloud firestore databases describe --database='(default)' --project "$PROJ
   gcloud firestore databases create --database='(default)' --location="$REGION" --type=firestore-native --project "$PROJECT"
 fi
 
-# Least privilege for the runtime identity: Firestore read/write and the Gemini secret only.
+# Dedicated runtime identity with least privilege: Firestore read/write and the Gemini secret only.
+if ! gcloud iam service-accounts describe "$RUNTIME_SA" --project "$PROJECT" >/dev/null 2>&1; then
+  gcloud iam service-accounts create echocheck-run --display-name "EchoCheck Cloud Run runtime" --project "$PROJECT"
+  sleep 10
+fi
 gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:${RUNTIME_SA}" \
   --role=roles/datastore.user --condition=None >/dev/null
 gcloud secrets add-iam-policy-binding gemini-api-key --member="serviceAccount:${RUNTIME_SA}" \

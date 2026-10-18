@@ -8,7 +8,7 @@ AI Builder Cup 2026 · Manufacturing: Intelligent Operations & Industrial Effici
 
 ## Try it
 
-**Live prototype:** `https://echocheck-ai-PROJECT_NUMBER.asia-southeast1.run.app` *(replace after deployment)*
+**Live prototype:** https://echocheck-ai-914156466613.asia-southeast1.run.app
 
 | View | Username | Password |
 | --- | --- | --- |
