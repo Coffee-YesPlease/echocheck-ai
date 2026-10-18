@@ -399,3 +399,67 @@ def test_caller_cancellation_propagates_and_closes_inflight_provider_stream(conf
                     await pending
 
     asyncio.run(scenario())
+
+
+def test_optional_pacing_spaces_provider_calls_without_retrying(configured, monkeypatch):
+    monkeypatch.setenv("GEMINI_MIN_INTERVAL_SECONDS", "0.3")
+    times = []
+    def handler(request):
+        times.append(asyncio.get_event_loop().time())
+        return httpx.Response(429, text="quota")
+    provider = GeminiProvider(transport=httpx.MockTransport(handler))
+    async def twice():
+        for _ in range(2):
+            with pytest.raises(ProviderUnavailable):
+                await provider.evaluate(REQUIREMENTS, TRANSCRIPT)
+    asyncio.run(twice())
+    assert len(times) == 2 and times[1] - times[0] >= 0.29
+
+
+def test_provider_schema_inlines_references_and_drops_only_list_caps():
+    from backend.gemini_adapter import provider_schema
+    from backend.verification import Evaluation
+    original = Evaluation.model_json_schema()
+    sent = provider_schema(original)
+    text = json.dumps(sent)
+    assert "$ref" not in text and "$defs" not in text and "maxItems" not in text
+    assert sent["additionalProperties"] is False and "passed" not in sent["properties"]
+    item = sent["properties"]["requirements"]["items"]
+    assert item["properties"]["status"]["enum"] == ["matched", "contradiction", "missing", "uncertain"]
+    assert item["additionalProperties"] is False
+    assert "$defs" in original  # the strict local model is unchanged
+
+
+def test_vertex_backend_uses_service_account_token_and_project_endpoint(configured, monkeypatch):
+    monkeypatch.setenv("GEMINI_BACKEND", "vertex")
+    monkeypatch.setenv("VERTEX_PROJECT", "echo-project-1")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    calls = []
+    def handler(request):
+        calls.append(request)
+        if request.url.host == "metadata.google.internal":
+            assert request.headers["Metadata-Flavor"] == "Google"
+            return httpx.Response(200, json={"access_token": "runtime-token", "expires_in": 3600})
+        assert request.url.host == "aiplatform.googleapis.com"
+        assert request.url.path == "/v1/projects/echo-project-1/locations/global/publishers/google/models/gemini-test-model:generateContent"
+        assert request.headers["Authorization"] == "Bearer runtime-token"
+        assert "x-goog-api-key" not in request.headers
+        return httpx.Response(200, json=envelope(evaluation()))
+    provider = GeminiProvider(transport=httpx.MockTransport(handler))
+    assert provider.configured
+    async def twice():
+        await provider.evaluate(REQUIREMENTS, TRANSCRIPT)
+        return await provider.evaluate(REQUIREMENTS, TRANSCRIPT)
+    assert asyncio.run(twice())["passed"]
+    assert [call.url.host for call in calls].count("metadata.google.internal") == 1  # token cached
+
+
+def test_vertex_backend_fails_closed_without_credentials(configured, monkeypatch):
+    monkeypatch.setenv("GEMINI_BACKEND", "vertex")
+    monkeypatch.setenv("VERTEX_PROJECT", "echo-project-1")
+    def handler(request):
+        return httpx.Response(404, text="no metadata")
+    with pytest.raises(ProviderUnavailable):
+        asyncio.run(GeminiProvider(transport=httpx.MockTransport(handler)).evaluate(REQUIREMENTS, TRANSCRIPT))
+    monkeypatch.setenv("GEMINI_BACKEND", "other")
+    assert not GeminiProvider().configured

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import copy
 import json
 import os
 import re
@@ -37,7 +38,31 @@ SUPPORTED_AUDIO_MIME_TYPES = frozenset({
     "audio/ogg", "audio/flac", "audio/m4a", "audio/mp4", "audio/webm", "audio/opus",
 })
 _MODEL_PATTERN = re.compile(r"gemini-[a-z0-9][a-z0-9.-]{0,95}\Z")
+_PROJECT_PATTERN = re.compile(r"[a-z][a-z0-9-]{4,28}[a-z0-9]\Z")
+_LOCATION_PATTERN = re.compile(r"(global|[a-z]+-[a-z]+[0-9])\Z")
+METADATA_TOKEN_URL = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token"
 _PLACEHOLDERS = frozenset({"placeholder", "your_api_key", "your_gemini_api_key", "change_me", "changeme"})
+
+
+def provider_schema(schema: dict) -> dict:
+    """Schema sent to Gemini: references inlined and list-length caps removed.
+
+    Gemini rejects these response schemas when maxItems is present (HTTP 400).
+    The server still enforces every limit, including list lengths, when it
+    validates the response, so this only changes what the model is asked for.
+    """
+    definitions = schema.get("$defs", {})
+
+    def walk(node):
+        if isinstance(node, dict):
+            if "$ref" in node:
+                return walk(copy.deepcopy(definitions[node["$ref"].rsplit("/", 1)[-1]]))
+            return {key: walk(value) for key, value in node.items() if key not in ("$defs", "maxItems")}
+        if isinstance(node, list):
+            return [walk(value) for value in node]
+        return node
+
+    return walk(schema)
 
 
 def _no_duplicate_keys(pairs):
@@ -105,9 +130,29 @@ class GeminiProvider:
         self._enabled = os.environ.get("PROVIDER_PROCESSING_ENABLED", "").lower() == "true"
         self.model = os.environ.get("GEMINI_MODEL", "")
         self._transport = transport
+        # "vertex" uses Gemini on Vertex AI with the runtime service account (no API key);
+        # the default uses the Gemini API with GEMINI_API_KEY.
+        self.backend = os.environ.get("GEMINI_BACKEND", "api_key").strip().lower()
+        self._vertex_project = os.environ.get("VERTEX_PROJECT") or os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("FIRESTORE_PROJECT_ID", "")
+        self._vertex_location = os.environ.get("VERTEX_LOCATION", "global")
+        self._static_token = os.environ.get("VERTEX_ACCESS_TOKEN", "")  # local development only
+        self._token, self._token_expiry = "", 0.0
+        # Free-tier pacing: keep calls under the per-minute quota instead of retrying after 429s.
+        try:
+            self._min_interval = max(0.0, min(30.0, float(os.environ.get("GEMINI_MIN_INTERVAL_SECONDS", "0") or 0)))
+        except ValueError:
+            self._min_interval = 0.0
+        self._pace_lock = None
+        self._next_slot = 0.0
 
     @property
     def configured(self) -> bool:
+        model_ok = bool(_MODEL_PATTERN.fullmatch(self.model)) and not any(word in self.model for word in ("placeholder", "your-model", "your_model"))
+        if self.backend == "vertex":
+            return bool(self._enabled and model_ok and _PROJECT_PATTERN.fullmatch(self._vertex_project)
+                        and _LOCATION_PATTERN.fullmatch(self._vertex_location))
+        if self.backend != "api_key":
+            return False
         key = self._api_key
         return bool(
             self._enabled
@@ -125,8 +170,40 @@ class GeminiProvider:
         if not self.configured:
             raise ProviderUnavailable("External processing is not configured and explicitly enabled.")
 
+    async def _access_token(self) -> str:
+        """Short-lived OAuth token for the runtime service account (metadata server)."""
+        if self._static_token:
+            return self._static_token
+        loop = asyncio.get_running_loop()
+        if self._token and loop.time() < self._token_expiry:
+            return self._token
+        try:
+            async with httpx.AsyncClient(timeout=httpx.Timeout(5.0), transport=self._transport, trust_env=False) as client:
+                response = await client.get(METADATA_TOKEN_URL, headers={"Metadata-Flavor": "Google"})
+            payload = response.json() if response.status_code == 200 else {}
+            token, lifetime = payload.get("access_token"), int(payload.get("expires_in", 0))
+        except (httpx.HTTPError, OSError, ValueError, TypeError):
+            token, lifetime = None, 0
+        if not isinstance(token, str) or not token or lifetime <= 0:
+            raise ProviderUnavailable("External processing credentials are unavailable. Please retry.")
+        self._token, self._token_expiry = token, loop.time() + max(0, lifetime - 120)
+        return token
+
+    async def _pace(self) -> None:
+        if not self._min_interval:
+            return
+        if self._pace_lock is None:
+            self._pace_lock = asyncio.Lock()
+        async with self._pace_lock:
+            loop = asyncio.get_running_loop()
+            wait = self._next_slot - loop.time()
+            if wait > 0:
+                await asyncio.sleep(wait)
+            self._next_slot = loop.time() + self._min_interval
+
     async def _generate(self, instruction: str, parts: list[dict], schema: dict) -> dict:
         self._require_configured()
+        await self._pace()
         body = {
             "systemInstruction": {"parts": [{"text": instruction}]},
             "contents": [{"role": "user", "parts": parts}],
@@ -135,10 +212,17 @@ class GeminiProvider:
                 "candidateCount": 1,
                 "maxOutputTokens": 8192,
                 "responseMimeType": "application/json",
-                "responseJsonSchema": schema,
+                "responseJsonSchema": provider_schema(schema),
             },
         }
-        endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
+        if self.backend == "vertex":
+            host = "aiplatform.googleapis.com" if self._vertex_location == "global" else f"{self._vertex_location}-aiplatform.googleapis.com"
+            endpoint = (f"https://{host}/v1/projects/{self._vertex_project}/locations/{self._vertex_location}"
+                        f"/publishers/google/models/{self.model}:generateContent")
+            headers = {"Authorization": "Bearer " + await self._access_token(), "Accept": "application/json"}
+        else:
+            endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
+            headers = {"x-goog-api-key": self._api_key, "Accept": "application/json"}
 
         async def request():
             timeout = httpx.Timeout(30.0, connect=5.0, write=10.0, pool=5.0)
@@ -146,8 +230,7 @@ class GeminiProvider:
                 timeout=timeout, transport=self._transport, follow_redirects=False, trust_env=False,
             ) as client:
                 async with client.stream(
-                    "POST", endpoint, json=body,
-                    headers={"x-goog-api-key": self._api_key, "Accept": "application/json"},
+                    "POST", endpoint, json=body, headers=headers,
                 ) as response:
                     if response.status_code != 200:
                         raise ProviderUnavailable("External processing is temporarily unavailable. Please retry.")

@@ -31,10 +31,10 @@ These are public prototype accounts. Prototype release to real work is disabled.
 
 | Service | How EchoCheck uses it |
 | --- | --- |
-| **Gemini** (Gemini API, structured JSON output) | Transcribes instruction and worker audio verbatim; extracts atomic requirements from the manager's instruction for human review; compares the worker's explanation with every requirement, quoting the worker's exact words as evidence. The server re-validates every response and derives the decision itself — the model cannot return its own pass. |
+| **Gemini on Vertex AI** (`gemini-3.5-flash`, structured JSON output) | Transcribes instruction and worker audio verbatim; extracts atomic requirements from the manager's instruction for human review; compares the worker's explanation with every requirement, quoting the worker's exact words as evidence. The server re-validates every response and derives the decision itself — the model cannot return its own pass. |
 | **Cloud Run** | Runs the FastAPI service and web app from this repository's Dockerfile (built by Cloud Build), with FFmpeg for browser audio validation. |
 | **Firestore** via the **Firebase Admin SDK** | Durable, append-only copy of the workflow audit trail, demo activity and task/demo status (`echocheck_audit_events`, `echocheck_demo_events`, `echocheck_tasks`, `echocheck_demo_runs`). Deterministic document ids make retries idempotent. No audio or transcripts are copied. |
-| **Secret Manager** | Holds the Gemini API key; only the Cloud Run runtime identity can read it. |
+| **IAM service account** | Cloud Run runs as a dedicated `echocheck-run` identity with only Firestore and Vertex AI access, so no API key is stored anywhere. |
 
 ```mermaid
 flowchart LR
@@ -44,10 +44,10 @@ flowchart LR
     WF[Workflow + safety checks<br/>SQLite, versioned transactions]
     V[Strict validators<br/>server-derived decision]
   end
-  CR -- audio + requirements --> G[Gemini]
+  CR -- audio + requirements --> G[Gemini on Vertex AI]
   G -- transcript / requirements / per-requirement comparison --> V
   WF -- committed history --> FS[(Firestore<br/>Firebase Admin SDK)]
-  SM[Secret Manager] -. API key .-> CR
+  SA[Service account] -. keyless auth .-> G
 ```
 
 ## Safety design
@@ -71,7 +71,7 @@ python3 -m venv .venv
 .venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Open http://localhost:8000. The `.prototype-enabled` marker selects prototype mode; demos need no API key. For live voice processing set `PROVIDER_PROCESSING_ENABLED=true`, `GEMINI_MODEL` and `GEMINI_API_KEY` in the process environment (see `.env.example`; it is not loaded automatically). Browser recordings (WebM/Ogg/MP4) need FFmpeg on the server; the container includes it.
+Open http://localhost:8000. The `.prototype-enabled` marker selects prototype mode; demos need no API key. For live voice processing set `PROVIDER_PROCESSING_ENABLED=true` and `GEMINI_MODEL`, plus either `GEMINI_BACKEND=vertex` with `VERTEX_PROJECT` (Vertex AI; on Cloud Run the service account authenticates, locally `VERTEX_ACCESS_TOKEN=$(gcloud auth print-access-token)`) or `GEMINI_API_KEY` for the Gemini API. Variables come from the process environment (see `.env.example`; it is not loaded automatically). Browser recordings (WebM/Ogg/MP4) need FFmpeg on the server; the container includes it.
 
 ## Tests
 
@@ -87,7 +87,7 @@ Tests use temporary databases and fake providers (`tests/conftest.py` keeps them
 GEMINI_MODEL=<model-id> deploy/cloudrun.sh
 ```
 
-Requires `gcloud auth login`, a project with billing and a Secret Manager secret `gemini-api-key`. The script enables the APIs, creates the Firestore database, grants the runtime identity only Firestore and secret access, and deploys one Cloud Run instance. `scripts/benchmark_live.py <url>` runs all 28 sample clips through the live Gemini check and writes `docs/LIVE-BENCHMARK.md`.
+Requires `gcloud auth login` and a project with billing. The script enables the APIs, creates the Firestore database, creates the `echocheck-run` identity with only Firestore and Vertex AI access, and deploys one Cloud Run instance. `scripts/benchmark_live.py <url>` runs all 28 sample clips through the live Gemini check and writes `docs/LIVE-BENCHMARK.md`.
 
 ## Repository map
 
