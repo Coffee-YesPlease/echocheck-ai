@@ -327,7 +327,7 @@ function renderTask(){
   renderUnderstanding(task);
   hide('acknowledgmentPanel',!(prototypeMode()?worker:supervisor) || legacySpeaker(task) || task.status!=='awaiting_supervisor_ack');
   $('acknowledgmentHelp').textContent=prototypeMode()?'Explain each difference to the worker, acknowledge the correction, and ask the same worker to repeat the whole task. Record the worker again; acknowledgment does not approve the task.':'Discuss every discrepancy with the worker. Acknowledgment opens a fresh worker recording; it does not approve the task.';
-  $('correctionText').value='';
+  $('correctionText').value='';$('inlineRecordConsent').checked=false;renderInlineRecord();
   const correction=typeof task.correction === 'string'?task.correction:task.correction?.text || task.correction?.correction;
   hide('correctionPanel',!correction);
   $('correctionDisplay').textContent=correction || '';
@@ -398,6 +398,7 @@ function clearDemoView(){
   state.demo=null;
   for(const id of ['demoTitle','demoStatus','demoNextStep','demoFreshness','demoInstruction','demoRequirements','demoVariant','demoSelectedTranscript','demoPreviousCorrection','demoComparison','demoApprovalList','demoApprovalStatement','demoHistory','demoLiveResult','demoLiveStatus']) $(id).replaceChildren();
   $('demoCorrectionText').value='';
+  const retry=$('demoRetryAudio');retry.pause();retry.removeAttribute('src');retry.load();$('demoRetryVariant').value='corrected';
 }
 async function openDemo(id){
   if(!prototypeMode() || !state.user) return false;
@@ -439,6 +440,7 @@ function renderDemo(){
   $('demoVariant').value='';selectDemoVariant();
   hide('demoCorrectionPanel',!demoIsSupervisor(demo) || demo.status!=='awaiting_supervisor_ack' || attempt?.verification?.passed!==false);
   $('demoCorrectionText').value=demo.correction_suggestion || '';
+  if(demo.status==='awaiting_supervisor_ack' && $('demoRetryAudio').getAttribute('src')!==demoAudioUrl(demo,$('demoRetryVariant').value)) selectDemoRetry();
   hide('demoPreviousCorrectionPanel',!demo.correction_text);
   $('demoPreviousCorrection').textContent=demo.correction_text || '';
   renderDemoComparison(demo);
@@ -515,6 +517,7 @@ function renderDemoFreshness(){
   $('demoVariant').disabled=!trusted || state.busy || !supervisor || !choiceStage;
   $('demoAttemptButton').disabled=!trusted || state.busy || !supervisor || !choiceStage || !available.includes(selected);
   $('demoCorrectionText').disabled=!trusted || state.busy || !supervisor || demo.status!=='awaiting_supervisor_ack';
+  $('demoRetryVariant').disabled=$('demoCorrectionText').disabled;
   $('demoAcknowledgeButton').disabled=!trusted || state.busy || !supervisor || demo.status!=='awaiting_supervisor_ack' || demo.latest_attempt?.verification?.passed!==false || !demo.latest_attempt?.id || $('demoCorrectionText').value.trim().length<3;
   const mineApproved=manager?demo.pm_ok:supervisor?demo.supervisor_ok:true;
   $('demoApproveButton').disabled=!trusted || state.busy || !(manager || supervisor) || mineApproved || demo.status!=='awaiting_approvals' || demo.latest_attempt?.verification?.passed!==true || !demo.latest_attempt?.id;
@@ -529,6 +532,45 @@ async function demoMutation(endpoint,body,success){
   try{await api('/prototype/demos/'+encodeURIComponent(id)+endpoint,{method:'POST',body:JSON.stringify(body)});await reloadDemo();notice(success,true);}
   catch(error){let refreshed=false;try{await reloadDemo();refreshed=true;}catch(_){}notice(error.message+' '+(refreshed?'The latest demo is shown. Review it before trying again.':'Reconnect and refresh before continuing.')+' No demo action was retried.');}
   finally{state.busy=false;renderDemoFreshness();}
+}
+function selectDemoRetry(){
+  const demo=state.demo,audio=$('demoRetryAudio');if(!demo) return;
+  audio.pause();audio.src=demoAudioUrl(demo,$('demoRetryVariant').value);
+}
+async function demoCorrectAndCompare(){
+  // Two server actions in order: the correction is acknowledged first, then the fresh explanation is compared.
+  const demo=state.demo;if(!demo || !validDemo(demo) || !state.currentTrusted || state.busy || state.capture) return;
+  const id=demo.id,variant=$('demoRetryVariant').value;
+  state.busy=true;markUntrusted();
+  try{
+    const acknowledged=await api('/prototype/demos/'+encodeURIComponent(id)+'/acknowledge',{method:'POST',body:JSON.stringify({expected_version:demo.version,attempt_id:demo.latest_attempt?.id,correction:$('demoCorrectionText').value.trim()})});
+    await api('/prototype/demos/'+encodeURIComponent(id)+'/attempt',{method:'POST',body:JSON.stringify({expected_version:acknowledged.version,variant})});
+    await reloadDemo();
+    notice(state.demo?.latest_attempt?.verification?.passed===true?'Correction acknowledged. The worker’s fresh explanation now matches; both roles can confirm.':'Correction acknowledged, but the fresh explanation still differs. Explain again and compare once more.',true);
+  }catch(error){let refreshed=false;try{await reloadDemo();refreshed=true;}catch(_){}notice(error.message+' '+(refreshed?'The latest demo is shown. Review it before trying again.':'Reconnect and refresh before continuing.')+' No demo action was retried.');}
+  finally{state.busy=false;renderDemoFreshness();}
+}
+function inlineRecordReady(){
+  return prototypeMode() && isWorker(state.task) && $('inlineRecordConsent').checked && !recordingCapability();
+}
+function renderInlineRecord(){
+  const available=prototypeMode() && isWorker(state.task) && state.task?.status==='awaiting_supervisor_ack' && !recordingCapability();
+  hide('inlineRecordLabel',!available);
+  $('acknowledgeButton').textContent=available && $('inlineRecordConsent').checked?'Acknowledge & record the worker again':'Acknowledge & request a new recording';
+}
+async function acknowledgeAndRecord(){
+  // Acknowledgment is saved first; the fresh recording then starts on the same screen.
+  const task=state.task;if(!task || state.busy || state.capture) return;
+  state.busy=true;markUntrusted();
+  try{
+    await api('/tasks/'+encodeURIComponent(task.id)+'/acknowledge',{method:'POST',body:JSON.stringify({expected_version:task.version,attempt_id:task.latest_attempt?.id,correction:$('correctionText').value.trim()})});
+    await reloadTask();
+  }catch(error){state.busy=false;try{await reloadTask();}catch(_){}renderFreshness();notice(error.message);return;}
+  state.busy=false;
+  $('recordConsent').checked=true;updateRecordingControls();
+  $('recordPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  notice('Correction acknowledged. Recording the same worker now — ask them to explain the whole task again, then press Stop.',true);
+  await startRecording();
 }
 async function pollDemo(){
   if(state.pollBusy || !state.user || !state.demo || state.page!=='demo' || document.hidden || state.busy) return;
@@ -715,7 +757,10 @@ $('demoBackButton').addEventListener('click',()=>void setPage('tasks'));
 $('demoVariant').addEventListener('change',selectDemoVariant);
 $('demoCorrectionText').addEventListener('input',renderDemoFreshness);
 $('demoAttemptButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoAttemptButton').disabled) void demoMutation('/attempt',{expected_version:demo.version,variant:$('demoVariant').value},'Prepared worker example compared.');});
-$('demoAcknowledgeButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoAcknowledgeButton').disabled) void demoMutation('/acknowledge',{expected_version:demo.version,attempt_id:demo.latest_attempt?.id,correction:$('demoCorrectionText').value.trim()},'Demo correction acknowledged. Choose a fresh worker example.');});
+$('demoAcknowledgeButton').addEventListener('click',()=>{if(state.demo && !$('demoAcknowledgeButton').disabled) void demoCorrectAndCompare();});
+$('demoRetryVariant').addEventListener('change',selectDemoRetry);
+$('inlineRecordConsent').addEventListener('change',renderInlineRecord);
+$('correctionText').addEventListener('input',renderInlineRecord);
 $('demoApproveButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoApproveButton').disabled) void demoMutation('/approve',{expected_version:demo.version,attempt_id:demo.latest_attempt?.id,approved:true},'Your confirmation was saved for this demo example.');});
 $('demoLiveButton').addEventListener('click',()=>void runDemoLiveCheck());
 $('demoRestartButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoRestartButton').disabled) void demoMutation('/restart',{expected_version:demo.version},'This demo has restarted. Earlier activity remains in its history.');});
@@ -743,7 +788,7 @@ $('interruptedCancelButton').addEventListener('click',async()=>{
   try{await api('/recording-tickets/'+encodeURIComponent(state.task.active_ticket.id)+'/cancel',{method:'POST',body:JSON.stringify({expected_version:state.task.version})});await reloadTask();notice('Interrupted recording canceled. Give consent and make a fresh recording.',true);}
   catch(error){try{await reloadTask();}catch(_){}notice(error.message);}finally{state.busy=false;$('interruptedCancelButton').disabled=false;}
 });
-$('acknowledgmentForm').addEventListener('submit',event=>{event.preventDefault();if(state.task) void mutation('/acknowledge',{expected_version:state.task.version,attempt_id:state.task.latest_attempt?.id,correction:$('correctionText').value.trim()},prototypeMode()?'Correction acknowledged. Record the same worker explaining the whole task again, including the corrected details.':'Correction acknowledged. The worker must make a fresh recording before any approval.');});
+$('acknowledgmentForm').addEventListener('submit',event=>{event.preventDefault();if(state.task && inlineRecordReady()){void acknowledgeAndRecord();return;}if(state.task) void mutation('/acknowledge',{expected_version:state.task.version,attempt_id:state.task.latest_attempt?.id,correction:$('correctionText').value.trim()},prototypeMode()?'Correction acknowledged. Record the same worker explaining the whole task again, including the corrected details.':'Correction acknowledged. The worker must make a fresh recording before any approval.');});
 $('approvalConsent').addEventListener('change',()=>{$('approveButton').disabled=!state.currentTrusted || legacySpeaker(state.task) || !$('approvalConsent').checked || state.busy;});
 $('approveButton').addEventListener('click',()=>{if(state.task && $('approvalConsent').checked) void mutation('/approve',{...attemptScope(),approved:true},prototypeMode()?'Your confirmation was saved for this instruction and worker recording.':'Your approval was saved for this exact instruction and worker attempt.');});
 $('withdrawButton').addEventListener('click',()=>{if(state.task) void mutation('/withdraw',attemptScope(),'Your approval was withdrawn. Work is blocked until the required checks and approvals pass again.');});
