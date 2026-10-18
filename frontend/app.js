@@ -4,7 +4,7 @@
 // Nothing sensitive is persisted in browser storage.
 const $ = id => document.getElementById(id);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
-const state = {user:null, adminUser:null, viewAsUsers:[], csrf:null, health:null, task:null, demo:null, page:'tasks', capture:null, busy:false, generation:0, poll:null, pollBusy:false, currentTrusted:false, lastChecked:null, workerReferenceDraft:''};
+const state = {user:null, adminUser:null, viewAsUsers:[], csrf:null, health:null, task:null, demo:null, page:'tasks', capture:null, busy:false, generation:0, poll:null, pollBusy:false, currentTrusted:false, lastChecked:null, workerReferenceDraft:'', liveBusy:false};
 const statusLabels = {
   draft:'Instruction draft', recording_instruction:'Supervisor recording', transcribing_instruction:'Transcribing instruction',
   awaiting_worker_recording:'Worker recording needed', recording_worker:'Worker recording', verification_pending:'Verification in progress',
@@ -380,7 +380,7 @@ const demoVariantList=demo=>{const allowed=demo?.status==='awaiting_worker_examp
 const demoAudioUrl=(demo,variant)=>'/api/prototype/demos/'+encodeURIComponent(demo.id)+'/audio/'+encodeURIComponent(variant);
 function clearDemoView(){
   state.demo=null;
-  for(const id of ['demoTitle','demoStatus','demoNextStep','demoFreshness','demoInstruction','demoRequirements','demoVariant','demoSelectedTranscript','demoPreviousCorrection','demoComparison','demoApprovalList','demoApprovalStatement','demoHistory']) $(id).replaceChildren();
+  for(const id of ['demoTitle','demoStatus','demoNextStep','demoFreshness','demoInstruction','demoRequirements','demoVariant','demoSelectedTranscript','demoPreviousCorrection','demoComparison','demoApprovalList','demoApprovalStatement','demoHistory','demoLiveResult','demoLiveStatus']) $(id).replaceChildren();
   $('demoCorrectionText').value='';
 }
 async function openDemo(id){
@@ -434,6 +434,7 @@ function renderDemo(){
   $('demoApprovalStatement').textContent=demoIsManager(demo)?'Confirm the prepared instruction and requirements for this exact demo example.':demoIsSupervisor(demo)?'Confirm that you reviewed the prepared worker example and its comparison.':'Project manager and Supervisor each confirm this matching example from their own view.';
   hide('demoCompleteMessage',demo.status!=='demo_complete');
   hide('demoRestartButton',!(demoIsManager(demo) || demoIsSupervisor(demo)));
+  renderDemoLive(demo);
   $('demoHistory').innerHTML=(demo.history || []).map(event=>`<li>${esc(String(event.action || event.event || 'Demo activity').replace(/_/g,' '))}${event.created?'<br>'+esc(formatDate(event.created)):''}</li>`).join('') || '<li>No demo activity yet.</li>';
   renderDemoFreshness();
 }
@@ -458,6 +459,31 @@ function renderDemoComparison(demo){
   if(verification.passed!==true) html+='<p class="disclosure">Supervisor reviews the difference, acknowledges the demo correction, then chooses a fresh example. An example that is still incorrect needs another correction.</p>';
   $('demoComparison').innerHTML=html;
 }
+const liveDecisionLabels={passed:'Live check · matches every requirement',discrepancy:'Live check · differences found',review_required:'Live check · needs human review'};
+function renderDemoLive(demo){
+  const configured=state.health?.provider_configured===true,latest=(demo.live_checks || [])[0];
+  if(!state.liveBusy) $('demoLiveStatus').textContent=configured?'Gemini transcribes the sample and compares it with each requirement. It usually takes 10–30 seconds.':'Live Gemini is not configured on this server. The prepared comparison is still available.';
+  if(!latest){$('demoLiveResult').replaceChildren();return;}
+  const verification=latest.verification || {},requirements=demo.instruction?.requirements || [];
+  const reasons={matched:'Gemini found this requirement in the sample.',contradiction:'Gemini found words that conflict with this requirement.',missing:'Gemini did not find this requirement in the sample.',uncertain:'Gemini could not confirm a clear match.'};
+  let html=`<p class="caption">Latest live result · ${esc(demoVariantLabels[latest.variant] || latest.label || 'Sample')} · ${esc(latest.model || 'Gemini')} · ${(Number(latest.latency_ms || 0)/1000).toFixed(1)} s</p><p class="verification-summary"><strong>${esc(liveDecisionLabels[latest.decision] || 'Live check result')}</strong></p><p class="caption">${latest.agrees_with_prepared?'Agrees with the prepared result for this sample.':'Differs from the prepared result for this sample (prepared: '+esc(String(latest.expected_decision || '').replace(/_/g,' '))+'). A human reviews any difference.'}</p><p>${esc(verification.summary || '')}</p><p class="caption">Gemini transcript of the sample voice</p><div class="transcript">${esc(latest.transcript || '')}</div>`;
+  html+=(verification.requirements || []).map(result=>`<div class="verification-result comparison-result"><span class="result-tag ${result.status!=='matched'?'issue':''}">${esc(result.status || 'uncertain')}</span><div class="comparison-label">What project manager asked</div><p class="comparison-value">${esc(requirements.find(requirement=>sameId(requirement.id,result.id))?.text || result.id)}</p><div class="comparison-label">What Gemini heard the worker say</div><p class="comparison-value">${esc(result.evidence || 'No supporting quote was identified.')}</p><p class="comparison-reason">${esc(reasons[result.status] || reasons.uncertain)}</p></div>`).join('');
+  for(const [key,label] of [['extra_actions','Extra actions Gemini noticed'],['uncertainties','Details Gemini found unclear']]) if(verification[key]?.length) html+=`<p><strong>${label}</strong></p><ul class="detail-list">${verification[key].map(item=>`<li>${esc(typeof item==='string'?item:JSON.stringify(item))}</li>`).join('')}</ul>`;
+  html+=`<p class="disclosure">${esc(latest.disclosure || 'Practice only. Not worker evidence.')}</p>`;
+  $('demoLiveResult').innerHTML=html;
+}
+async function runDemoLiveCheck(){
+  const demo=state.demo;if(!demo || !validDemo(demo) || !state.currentTrusted || state.busy || state.liveBusy) return;
+  state.liveBusy=true;renderDemoFreshness();const id=demo.id,started=Date.now();
+  $('demoLiveStatus').textContent='Gemini is transcribing and comparing the sample…';
+  const timer=setInterval(()=>{$('demoLiveStatus').textContent=`Gemini is transcribing and comparing the sample… ${Math.floor((Date.now()-started)/1000)} s`;},1000);
+  try{
+    await api('/prototype/demos/'+encodeURIComponent(id)+'/live-check',{method:'POST',body:JSON.stringify({variant:$('demoLiveVariant').value})});
+    clearInterval(timer);state.liveBusy=false;
+    if(sameId(state.demo?.id,id)){await reloadDemo();$('demoLiveStatus').textContent='Live result received. It does not change this demo.';}
+  }catch(error){clearInterval(timer);state.liveBusy=false;$('demoLiveStatus').textContent=error.message;}
+  finally{clearInterval(timer);state.liveBusy=false;renderDemoFreshness();}
+}
 function renderDemoFreshness(){
   const demo=state.demo;if(!demo) return;
   const trusted=state.currentTrusted && validDemo(demo),supervisor=demoIsSupervisor(demo),manager=demoIsManager(demo);
@@ -476,6 +502,9 @@ function renderDemoFreshness(){
   const mineApproved=manager?demo.pm_ok:supervisor?demo.supervisor_ok:true;
   $('demoApproveButton').disabled=!trusted || state.busy || !(manager || supervisor) || mineApproved || demo.status!=='awaiting_approvals' || demo.latest_attempt?.verification?.passed!==true || !demo.latest_attempt?.id;
   $('demoRestartButton').disabled=!trusted || state.busy || !(manager || supervisor);
+  $('demoLiveButton').disabled=!trusted || state.busy || state.liveBusy || state.health?.provider_configured!==true;
+  $('demoLiveVariant').disabled=!trusted || state.liveBusy;
+  $('demoLiveButton').textContent=state.liveBusy?'Checking with Gemini…':'Run live Gemini check';
 }
 async function demoMutation(endpoint,body,success){
   const demo=state.demo;if(!demo || !validDemo(demo) || !state.currentTrusted || state.busy || state.capture) return;
@@ -670,6 +699,7 @@ $('demoCorrectionText').addEventListener('input',renderDemoFreshness);
 $('demoAttemptButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoAttemptButton').disabled) void demoMutation('/attempt',{expected_version:demo.version,variant:$('demoVariant').value},'Prepared worker example compared.');});
 $('demoAcknowledgeButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoAcknowledgeButton').disabled) void demoMutation('/acknowledge',{expected_version:demo.version,attempt_id:demo.latest_attempt?.id,correction:$('demoCorrectionText').value.trim()},'Demo correction acknowledged. Choose a fresh worker example.');});
 $('demoApproveButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoApproveButton').disabled) void demoMutation('/approve',{expected_version:demo.version,attempt_id:demo.latest_attempt?.id,approved:true},'Your confirmation was saved for this demo example.');});
+$('demoLiveButton').addEventListener('click',()=>void runDemoLiveCheck());
 $('demoRestartButton').addEventListener('click',()=>{const demo=state.demo;if(demo && !$('demoRestartButton').disabled) void demoMutation('/restart',{expected_version:demo.version},'This demo has restarted. Earlier activity remains in its history.');});
 $('newTaskForm').addEventListener('submit',async event=>{
   event.preventDefault();if(state.busy || workflowRole()!=='supervisor') return;state.busy=true;$('createButton').disabled=true;

@@ -3,10 +3,13 @@
 .env
 work
 outputs
+submission
 *.db
 *.db-*
 __pycache__
 .pytest_cache
 tests
-dataset
 docs
+dataset/*
+!dataset/demo_scenarios_v1.json
+.claude

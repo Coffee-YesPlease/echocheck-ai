@@ -1,0 +1,16 @@
+# Upload only what the container build needs; never runtime data or secrets.
+.gcloudignore
+.git
+.gitignore
+.venv/
+.env
+work/
+outputs/
+submission/
+*.db
+*.db-*
+__pycache__/
+.pytest_cache/
+tests/
+docs/
+.claude/

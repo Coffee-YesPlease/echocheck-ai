@@ -1,5 +1,6 @@
 """Isolated prerecorded practice runs; never live AI or permission to start work."""
 from __future__ import annotations
+import asyncio
 import hashlib
 import json
 from pathlib import Path
@@ -14,7 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt
 from .audio import InvalidAudio, validate_audio
 from .config import ROOT
 from .store import encode, timestamp, uid
-from .verification import InvalidProviderResponse, validate_evaluation, validate_requirements
+from .verification import InvalidProviderResponse, ProviderUnavailable, validate_evaluation, validate_requirements
 
 VARIANTS = ('correct','incorrect','corrected','still_incorrect')
 LABELS = {'correct':'Correct response','incorrect':'Incorrect response','corrected':'Corrected response','still_incorrect':'Still incorrect response'}
@@ -34,6 +35,14 @@ class DemoApprove(DemoBody):
     attempt_id: str = Field(min_length=1,max_length=80)
     approved: StrictBool = True
 
+class DemoLiveCheck(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    variant: Literal['correct','incorrect','corrected','still_incorrect']
+
+LIVE_CHECK_SECONDS = 75
+LIVE_DISCLOSURE = ('Live Gemini check of a synthetic sample voice. Practice only: it is not worker evidence, '
+                   'does not change this demo and cannot release work.')
+
 class DemoService:
     def __init__(self,settings,store):
         self.settings,self.store = settings,store
@@ -43,7 +52,11 @@ class DemoService:
         self.catalog = {}
         self.catalog_id = None
         if settings.mode == 'prototype':
-            self.seed()
+            try:
+                self.seed()
+            except HTTPException:
+                raise RuntimeError('Prototype mode requires dataset/demo_scenarios_v1.json and backend/demo_assets. '
+                                   'Package the practice catalog or choose another ECHOCHECK_MODE.') from None
 
     def load_catalog(self):
         try:
@@ -153,6 +166,7 @@ class DemoService:
                           'source':'scripted_demo','synthetic_audio':True}
         history = [{'id':row['id'],'action':row['action'],'actor_id':row['actor_id'],'principal_id':row['principal_id'],'version':row['version'],
                     'detail':json.loads(row['detail']),'created':timestamp(row['created'])} for row in c.execute('SELECT * FROM ec_demo_events WHERE run_id=? ORDER BY id',(run['id'],))]
+        live_checks = [self.live_view(scenario,dict(row)) for row in c.execute("SELECT * FROM ec_demo_live_checks WHERE run_id=? AND status='completed' ORDER BY created DESC LIMIT 4",(run['id'],))]
         return {'id':run['id'],'scenario_id':run['scenario_id'],'catalog_id':run['catalog_id'],'kind':'prerecorded_demo','source':'scripted_demo',
                 'title':scenario['title'],'status':run['status'],'version':run['version'],'generation':run['generation'],
                 'project_manager_id':run['project_manager_id'],'supervisor_id':run['supervisor_id'],'worker_reference':scenario['worker_reference'],
@@ -161,8 +175,17 @@ class DemoService:
                 'available_variants':[{'id':key,'label':LABELS[key],'audio_url':self.audio_url(run,key),'transcript':scenario['variants'][key]['transcript']} for key in stage],
                 'latest_attempt':latest,'correction_suggestion':scenario['correction_suggestion'],'correction_text':run['correction_text'],
                 'pm_ok':bool(run['pm_ok']),'supervisor_ok':bool(run['supervisor_ok']),'real_release_enabled':False,'release_eligible':False,
-                'provider_used':False,'synthetic_audio':True,'history':history,'created':timestamp(run['created']),'updated':timestamp(run['updated']),
+                'provider_used':False,'synthetic_audio':True,'history':history,'live_checks':live_checks,'created':timestamp(run['created']),'updated':timestamp(run['updated']),
                 'disclosure':'Prerecorded synthetic sample voices and scripted comparisons. This practice run is separate from live tasks and cannot release real work.'}
+
+    def live_view(self,scenario,row):
+        result = json.loads(row['result']) if row['result'] else {}
+        return {'id':row['id'],'variant':row['variant'],'label':LABELS.get(row['variant'],row['variant']),'source':'live_gemini',
+                'model':row['model'],'transcript':result.get('transcript',''),'verification':result.get('verification'),
+                'decision':row['decision'],'expected_decision':row['expected_decision'],
+                'agrees_with_prepared':row['decision'] == row['expected_decision'],'latency_ms':row['latency_ms'],
+                'audio_url':'/api/prototype/demos/'+row['run_id']+'/audio/'+row['variant'],'created':timestamp(row['created']),
+                'creates_evidence':False,'real_release_enabled':False,'disclosure':LIVE_DISCLOSURE}
 
     def current_attempt(self,c,run,attempt_id):
         if run['latest_attempt_id'] != attempt_id:
@@ -173,7 +196,7 @@ class DemoService:
         return attempt
 
 
-def demo_router(service,session):
+def demo_router(service,session,provider=None):
     router = APIRouter(prefix='/api/prototype/demos')
 
     def enabled():
@@ -290,6 +313,59 @@ def demo_router(service,session):
                 raise HTTPException(403,'Choose an assigned perspective before restarting this practice run.')
             service.change(c,run,actor,'demo_restarted',{'generation':run['generation']+1,'status':'awaiting_worker_example','latest_attempt_id':None,'ack_id':None,'pm_ok':0,'supervisor_ok':0,'correction_text':None}, {'previous_attempt_id':run['latest_attempt_id'],'previous_generation':run['generation']})
             return result(c,run_id)
+
+    @router.post('/{run_id}/live-check')
+    async def live_check(run_id:str,request:Request,body:DemoLiveCheck):
+        """Send one synthetic sample to the live provider. Never touches demo state or live evidence."""
+        enabled()
+        if provider is None or not provider.configured:
+            raise HTTPException(503,'Live Gemini processing is not configured on this server. The prepared demo comparison remains available.')
+        with service.store.transaction() as c:
+            actor = session(request,c,True,allow_admin=True)
+            run = service.assigned(c,run_id,actor)
+            limit = service.store.enforce_live_budget(c,actor['session_id'])
+            if limit:
+                raise HTTPException(429,limit)
+            path,asset_path,asset_sha = service.fixture_audio(run,body.variant)
+            scenario = service.scenario(run)
+            expected = scenario['variants'][body.variant]['expected_decision']
+            check_id,now = 'demo_live_'+uid(),time.time()
+            c.execute('INSERT INTO ec_demo_live_checks(id,run_id,variant,actor_id,principal_id,session_id,status,model,expected_decision,created) VALUES(?,?,?,?,?,?,?,?,?,?)',
+                      (check_id,run_id,body.variant,actor['id'],actor.get('principal_id',actor['id']),actor['session_id'],'started',getattr(provider,'model',None),expected,now))
+            service.event(c,run,actor,'demo_live_check_started',{'check_id':check_id,'variant':body.variant,'source':'live_gemini','creates_evidence':False})
+        data = path.read_bytes()
+        requirements = scenario['instruction']['requirements']
+        started = time.monotonic()
+
+        def finish(status,detail,values=None):
+            with service.store.transaction() as c:
+                values = dict(values or {})
+                c.execute('UPDATE ec_demo_live_checks SET status=?,decision=?,result=?,latency_ms=?,finished=? WHERE id=?',
+                          (status,values.get('decision'),values.get('result'),values.get('latency_ms'),time.time(),check_id))
+                current = dict(c.execute('SELECT * FROM ec_demo_runs WHERE id=?',(run_id,)).fetchone())
+                service.event(c,current,actor,'demo_live_check_'+status,detail)
+                return dict(c.execute('SELECT * FROM ec_demo_live_checks WHERE id=?',(check_id,)).fetchone())
+
+        try:
+            transcript = await asyncio.wait_for(provider.transcribe(data,'audio/wav'),timeout=LIVE_CHECK_SECONDS)
+            remaining = max(1.0,LIVE_CHECK_SECONDS-(time.monotonic()-started))
+            result = await asyncio.wait_for(provider.evaluate(requirements,transcript),timeout=remaining)
+            if not isinstance(result,dict):
+                raise InvalidProviderResponse('The live comparison was incomplete.')
+            verification = validate_evaluation(requirements,transcript,{k:v for k,v in result.items() if k not in ('passed','decision')})
+        except asyncio.CancelledError:
+            finish('failed',{'check_id':check_id,'reason':'cancelled'})
+            raise
+        except Exception as exc:
+            message = str(exc) if isinstance(exc,(InvalidProviderResponse,ProviderUnavailable)) else 'The live Gemini check failed. Try again later; the prepared comparison remains available.'
+            finish('failed',{'check_id':check_id,'variant':body.variant,'reason':message})
+            raise HTTPException(503,message) from None
+        latency = int((time.monotonic()-started)*1000)
+        stored = finish('completed',{'check_id':check_id,'variant':body.variant,'decision':verification['decision'],'expected_decision':expected,
+                                     'agrees_with_prepared':verification['decision']==expected,'latency_ms':latency,'source':'live_gemini'},
+                        {'decision':verification['decision'],'latency_ms':latency,
+                         'result':encode({'transcript':transcript,'verification':verification,'asset_sha256':asset_sha})})
+        return service.live_view(scenario,stored)
 
     @router.get('/{run_id}/audio/{key}')
     def audio(run_id:str,key:str,request:Request):

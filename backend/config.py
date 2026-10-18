@@ -20,6 +20,12 @@ class Settings:
     ticket_seconds: int = 300
     processing_seconds: int = 180
     secure_cookies: bool | None = None
+    extra_origins: tuple = ()
+    # Live AI budget for public prototypes; 0 disables a limit.
+    live_daily_limit: int = 0
+    live_session_hourly_limit: int = 0
+    firestore_mirror: bool = False
+    firestore_project: str = ''
 
     def __post_init__(self):
         self.db_path = Path(self.db_path)
@@ -28,6 +34,15 @@ class Settings:
         url = urlsplit(self.app_origin)
         if url.scheme not in ('http', 'https') or not url.netloc or url.path or url.query or url.fragment or url.username:
             raise ValueError('APP_ORIGIN must be a complete http(s) origin without a path or credentials')
+        self.extra_origins = tuple(origin.rstrip('/') for origin in self.extra_origins if origin and origin.strip())
+        for origin in self.extra_origins:
+            extra = urlsplit(origin)
+            if extra.scheme not in ('http', 'https') or not extra.netloc or extra.path or extra.query or extra.fragment or extra.username:
+                raise ValueError('ALLOWED_ORIGINS must list complete http(s) origins without paths or credentials')
+            if self.mode == 'production' and extra.scheme != 'https':
+                raise ValueError('Production origins must use HTTPS')
+        if min(self.live_daily_limit, self.live_session_hourly_limit) < 0:
+            raise ValueError('Live AI limits cannot be negative')
         if self.mode not in ('development', 'production', 'test', 'prototype'):
             raise ValueError('Mode must be development, production, test, or prototype')
         if min(self.session_seconds, self.recording_retention_seconds, self.ticket_seconds, self.processing_seconds) <= 0:
@@ -38,7 +53,7 @@ class Settings:
             raise ValueError('Production requires an HTTPS origin and secure cookies')
 
     def origin_allowed(self, value):
-        if value == self.app_origin:
+        if value == self.app_origin or (value and value in self.extra_origins):
             return True
         if self.mode not in ('development','prototype') or not value:
             return False
@@ -69,4 +84,9 @@ class Settings:
             recording_retention_seconds=int(os.environ.get('RECORDING_RETENTION_SECONDS', '604800')),
             ticket_seconds=int(os.environ.get('RECORDING_TICKET_SECONDS', '300')),
             processing_seconds=int(os.environ.get('RECORDING_PROCESSING_SECONDS', '180')),
+            extra_origins=tuple(os.environ.get('ALLOWED_ORIGINS', '').split(',')),
+            live_daily_limit=int(os.environ.get('LIVE_DAILY_LIMIT', '300')),
+            live_session_hourly_limit=int(os.environ.get('LIVE_SESSION_HOURLY_LIMIT', '30')),
+            firestore_mirror=os.environ.get('FIRESTORE_MIRROR_ENABLED', '').lower() == 'true',
+            firestore_project=os.environ.get('FIRESTORE_PROJECT_ID') or os.environ.get('GOOGLE_CLOUD_PROJECT', ''),
         )

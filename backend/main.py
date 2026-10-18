@@ -70,13 +70,13 @@ class Approve(EvidenceAction):
     approved: StrictBool = True
 
 
-def create_app(settings=None, provider=None):
+def create_app(settings=None, provider=None, mirror_client_factory=None):
     settings = settings or Settings.from_env()
     store = Store(settings)
     prototype_profiles = bootstrap_prototype(store) if settings.mode == 'prototype' else []
     persona_by_id = {profile['id']:profile['persona'] for profile in prototype_profiles}
     provider = provider if provider is not None else GeminiProvider()
-    app = FastAPI(title='EchoCheck AI',version='0.5.0', docs_url=None, redoc_url=None, openapi_url=None)
+    app = FastAPI(title='EchoCheck AI',version='0.6.0', docs_url=None, redoc_url=None, openapi_url=None)
     app.state.settings = settings
     app.state.store = store
     app.state.provider = provider
@@ -99,6 +99,13 @@ def create_app(settings=None, provider=None):
             response.headers['Cache-Control'] = 'no-store'
         if settings.secure_cookies:
             response.headers['Strict-Transport-Security'] = 'max-age=31536000'
+        mirror = getattr(app.state,'mirror',None)
+        if mirror is not None and request.method == 'POST' and request.url.path.startswith('/api/'):
+            # Copy committed history before the request ends; Cloud Run may throttle CPU afterwards.
+            try:
+                await asyncio.wait_for(asyncio.to_thread(mirror.flush),timeout=4)
+            except asyncio.TimeoutError:
+                pass
         return response
 
     def session(request, c, mutation=False, allow_admin=False):
@@ -436,7 +443,9 @@ def create_app(settings=None, provider=None):
 
     @app.get('/api/health')
     def health():
-        return {'ok':True,'mode':settings.mode,'provider_configured':bool(provider.configured),'release_enabled':bool(settings.release_environment_ready and provider.configured),'consent_version':settings.consent_version,'recording_retention_seconds':settings.recording_retention_seconds,'recording_disclosure':disclosure(),'prototype':settings.mode=='prototype'}
+        mirror = getattr(app.state,'mirror',None)
+        return {'ok':True,'mode':settings.mode,'provider_configured':bool(provider.configured),'provider_model':getattr(provider,'model',None) if provider.configured else None,
+                'firestore_mirror':mirror.status() if mirror else {'enabled':False},'release_enabled':bool(settings.release_environment_ready and provider.configured),'consent_version':settings.consent_version,'recording_retention_seconds':settings.recording_retention_seconds,'recording_disclosure':disclosure(),'prototype':settings.mode=='prototype'}
 
     @app.post('/api/login')
     def login(request: Request,body: Login):
@@ -593,6 +602,9 @@ def create_app(settings=None, provider=None):
                 raise HTTPException(409,'Review the current recording consent before recording.')
             if not provider.configured:
                 raise HTTPException(503,'Voice processing is not configured. Work remains blocked.')
+            limit = store.enforce_live_budget(c,actor['session_id'])
+            if limit:
+                raise HTTPException(429,limit)
             task = expire_active(c,task)
             if task['active_ticket_id']:
                 raise HTTPException(409,'Finish or cancel the current recording before starting another.')
@@ -978,7 +990,13 @@ def create_app(settings=None, provider=None):
     from .demo import DemoService, demo_router
     demo_service = DemoService(settings,store)
     app.state.demo_service = demo_service
-    app.include_router(demo_router(demo_service,session))
+    app.include_router(demo_router(demo_service,session,provider=provider))
+
+    app.state.mirror = None
+    if settings.firestore_mirror:
+        from .firestore_mirror import FirestoreMirror
+        app.state.mirror = FirestoreMirror(store,client_factory=mirror_client_factory,project=settings.firestore_project)
+        app.state.mirror.start()
 
     frontend = ROOT / 'frontend'
     app.mount('/assets',StaticFiles(directory=frontend),name='assets')

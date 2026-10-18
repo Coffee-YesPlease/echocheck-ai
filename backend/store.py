@@ -46,6 +46,9 @@ CREATE TABLE IF NOT EXISTS ec_demo_acks (id TEXT PRIMARY KEY, run_id TEXT NOT NU
 CREATE TABLE IF NOT EXISTS ec_demo_approvals (id TEXT PRIMARY KEY, run_id TEXT NOT NULL REFERENCES ec_demo_runs(id), generation INTEGER NOT NULL, attempt_id TEXT NOT NULL, actor_id TEXT NOT NULL, principal_id TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('project_manager','supervisor')), approved INTEGER NOT NULL, created REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS ec_demo_events (id INTEGER PRIMARY KEY AUTOINCREMENT, run_id TEXT NOT NULL REFERENCES ec_demo_runs(id), version INTEGER NOT NULL, action TEXT NOT NULL, actor_id TEXT, principal_id TEXT, detail TEXT NOT NULL, created REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS ec_purges (recording_id TEXT PRIMARY KEY, purged REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS ec_demo_live_checks (id TEXT PRIMARY KEY, run_id TEXT NOT NULL REFERENCES ec_demo_runs(id), variant TEXT NOT NULL, actor_id TEXT NOT NULL, principal_id TEXT NOT NULL, session_id TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('started','completed','failed')), model TEXT, expected_decision TEXT, decision TEXT, result TEXT, latency_ms INTEGER, created REAL NOT NULL, finished REAL);
+CREATE INDEX IF NOT EXISTS ec_demo_live_checks_created ON ec_demo_live_checks(created);
+CREATE TABLE IF NOT EXISTS ec_mirror_state (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 '''
 
 class Store:
@@ -101,6 +104,19 @@ class Store:
             c.execute('INSERT INTO ec_users VALUES (?,?,?,?,?,?,1,?)', (user_id,username,password_hash,role,site,display_name,time.time()))
             self.audit(c, None, user_id, 'user_provisioned', None, {'role':role,'site':site})
         return {'id':user_id,'username':username,'role':role,'site':site,'display_name':display_name}
+
+    def enforce_live_budget(self, c, session_id):
+        """Bound paid live-AI use on public prototypes. Counts started work, including failures."""
+        settings, now = self.settings, time.time()
+        if settings.live_session_hourly_limit:
+            used = c.execute('SELECT (SELECT COUNT(*) FROM ec_recording_tickets WHERE session_id=? AND created>=?)+(SELECT COUNT(*) FROM ec_demo_live_checks WHERE session_id=? AND created>=?)',(session_id,now-3600,session_id,now-3600)).fetchone()[0]
+            if used >= settings.live_session_hourly_limit:
+                return 'This session reached its hourly live AI limit. Try again later; the prerecorded demos remain available.'
+        if settings.live_daily_limit:
+            used = c.execute('SELECT (SELECT COUNT(*) FROM ec_recording_tickets WHERE created>=?)+(SELECT COUNT(*) FROM ec_demo_live_checks WHERE created>=?)',(now-86400,now-86400)).fetchone()[0]
+            if used >= settings.live_daily_limit:
+                return 'The daily live AI limit for this prototype has been reached. The prerecorded demos remain available.'
+        return None
 
     def audit(self, c, task_id, actor_id, action, version=None, detail=None):
         c.execute('INSERT INTO ec_audit(task_id,actor_id,action,version,detail,created) VALUES(?,?,?,?,?,?)', (task_id,actor_id,action,version,encode(detail or {}),time.time()))

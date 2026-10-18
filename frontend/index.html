@@ -6,8 +6,8 @@
   <meta name="color-scheme" content="light">
   <meta name="referrer" content="same-origin">
   <title>EchoCheck AI · Clarity before action</title>
-  <link rel="stylesheet" href="/assets/style.css?v=0.5">
-  <script defer src="/assets/app.js?v=0.5"></script>
+  <link rel="stylesheet" href="/assets/style.css?v=0.6">
+  <script defer src="/assets/app.js?v=0.6"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to workspace</a>
@@ -81,7 +81,7 @@
         <section id="demoPage" class="hidden" aria-labelledby="demoTitle">
           <button class="back-button" id="demoBackButton" type="button">← All tasks</button>
           <div class="section-heading detail-heading"><div><p class="eyebrow">PRERECORDED DEMO</p><h1 id="demoTitle"></h1></div><span class="status waiting" id="demoStatus"></span></div>
-          <div class="demo-disclosure"><span>Sample voices · Demo comparison</span><details class="info compact"><summary aria-label="About prerecorded examples">i</summary><p>These are prepared examples with prerecorded synthetic sample voices and scripted comparisons. No microphone or live AI is used. No real worker consent or work release is recorded by these examples.</p></details></div>
+          <div class="demo-disclosure"><span>Sample voices · Demo comparison</span><details class="info compact"><summary aria-label="About prerecorded examples">i</summary><p>These are prepared examples with prerecorded synthetic sample voices and scripted comparisons. The prepared comparison uses no microphone or live AI. The optional Live Gemini check sends a sample voice to Google Gemini for practice. No real worker consent or work release is recorded by these examples.</p></details></div>
           <div id="demoNextStep" class="next-step" role="status"></div><p class="caption freshness-note" id="demoFreshness" aria-live="polite"></p>
           <div class="detail-grid">
             <div>
@@ -92,6 +92,7 @@
             </div>
             <div>
               <section class="panel" aria-labelledby="demoComparisonTitle"><div class="panel-heading"><h2 id="demoComparisonTitle">Demo comparison</h2><span class="demo-badge">Prepared result</span></div><div id="demoComparison"></div></section>
+              <section class="panel" id="demoLivePanel" aria-labelledby="demoLiveTitle"><div class="panel-heading"><h2 id="demoLiveTitle">Live Gemini check</h2><details class="info compact"><summary aria-label="About the live Gemini check">i</summary><p>Sends the chosen synthetic sample voice to Google Gemini. Gemini transcribes it and compares it with every requirement; the server, not the model, decides whether it matches. This is practice only: it is not worker evidence, does not change this demo and cannot release work. Use is limited per session and per day.</p></details></div><span class="demo-badge">Live AI · practice only</span><label class="demo-field-label" for="demoLiveVariant">Sample worker explanation</label><select id="demoLiveVariant"><option value="correct">Correct understanding</option><option value="incorrect">Incorrect understanding</option><option value="corrected">Correct after correction</option><option value="still_incorrect">Still incorrect after correction</option></select><button class="button secondary full" id="demoLiveButton" type="button">Run live Gemini check</button><p class="caption" id="demoLiveStatus" aria-live="polite"></p><div id="demoLiveResult"></div></section>
               <section class="panel hidden" id="demoApprovalsPanel" aria-labelledby="demoApprovalsTitle"><h2 id="demoApprovalsTitle">Confirm the demo</h2><p>Each role confirms this matching example separately.</p><ul id="demoApprovalList" class="approval-list"></ul><p id="demoApprovalStatement" class="caption"></p><button class="button full hidden" id="demoApproveButton" type="button">OK — confirm</button><p class="disclosure hidden" id="demoCompleteMessage">Demo complete. Both confirmations were saved for this example. This preview does not release real work.</p></section>
               <section class="panel"><div class="panel-heading"><h2>Try it again</h2></div><p class="caption">Repeat this demo with fresh examples and confirmations. Earlier demo activity stays in its history.</p><button class="button secondary hidden" id="demoRestartButton" type="button">Repeat this demo</button><details class="demo-history"><summary>Demo activity</summary><ol id="demoHistory" class="history-list"></ol></details></section>
             </div>
@@ -100,7 +101,7 @@
         <section id="aboutPage" class="hidden" aria-labelledby="aboutTitle"><div class="panel narrow"><p class="eyebrow">HOW IT WORKS</p><h1 id="aboutTitle">A clear handoff, step by step.</h1><ol class="workflow"><li><strong>Supervisor records and reviews.</strong><span>Record the instruction with consent, check the transcript, and publish all requirements.</span></li><li><strong id="aboutRetellingTitle">Worker retells on a second device.</strong><span id="aboutRetellingHelp">The assigned worker signs in and records what they understand, in their own words.</span></li><li><strong>AI compares every requirement.</strong><span>Missing, conflicting or uncertain details keep the task blocked.</span></li><li><strong id="aboutCorrectionTitle">Supervisor explains corrections.</strong><span id="aboutCorrectionHelp">Acknowledge the differences and document the correction. The worker must record again.</span></li><li><strong>Both approve the passing attempt.</strong><span id="aboutApprovalsHelp">Each person approves the same instruction version and worker recording.</span></li><li><strong>Supervisor releases the task.</strong><span>Only a released task can proceed through this app's workflow. Follow all other required workplace approvals and procedures.</span></li></ol><p class="disclosure" id="aboutDisclosure">An AI check supports communication. It does not grant a permit, certify that a task is safe, or replace required workplace approvals. Development and unconfigured environments cannot release work.</p></div></section>
       </div>
     </main>
-    <footer>EchoCheck AI <span aria-hidden="true">·</span> Version 0.5</footer>
+    <footer>EchoCheck AI <span aria-hidden="true">·</span> Version 0.6</footer>
   </div>
 </body>
 </html>
