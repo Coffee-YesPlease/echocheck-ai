@@ -6,8 +6,9 @@
   <meta name="color-scheme" content="light">
   <meta name="referrer" content="same-origin">
   <title>EchoCheck AI · Clarity before action</title>
-  <link rel="stylesheet" href="/assets/style.css?v=0.6">
-  <script defer src="/assets/app.js?v=0.6"></script>
+  <link rel="stylesheet" href="/assets/style.css?v=0.7">
+  <script defer src="/assets/flow.js?v=0.7"></script>
+  <script defer src="/assets/app.js?v=0.7"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to workspace</a>
@@ -34,10 +35,11 @@
         </div>
       </section>
       <div id="workspace" class="hidden">
-        <nav class="tabs" aria-label="Workspace"><button class="tab active" id="tasksTab" type="button">Tasks</button><button class="tab hidden" id="newTab" type="button">New task</button><button class="tab" id="aboutTab" type="button">How it works</button></nav>
+        <nav class="tabs" aria-label="Workspace"><button class="tab active" id="tasksTab" type="button">Dashboard</button><button class="tab hidden" id="newTab" type="button">New task</button><button class="tab" id="scenarioTab" type="button">Scenario</button><button class="tab" id="aboutTab" type="button">How it works</button></nav>
         <section id="tasksPage" aria-labelledby="tasksTitle">
-          <div class="section-heading"><div><p class="eyebrow">YOUR WORKSPACE</p><h1 id="tasksTitle">Every instruction, understood.</h1><p>Open a task to see its next required step.</p></div><button type="button" class="button secondary" id="refreshButton">Refresh</button></div>
+          <div class="section-heading"><div><p class="eyebrow">DASHBOARD</p><h1 id="tasksTitle">Every instruction, understood.</h1><p id="dashboardIntro">See where every task is, what is locked, and whose turn it is. Open a task to continue.</p></div><button type="button" class="button secondary" id="refreshButton">Refresh</button></div>
           <p class="admin-overview hidden" id="adminOverviewNotice">Admin overview · Choose Project manager or Supervisor above to try that role. Admin can view tasks but does not give task approvals.</p>
+          <div id="dashboardSummary"></div>
           <div id="taskList" class="task-list" aria-live="polite"></div>
         </section>
         <section id="newPage" class="hidden" aria-labelledby="newTitle">
@@ -52,6 +54,7 @@
         <section id="detailPage" class="hidden" aria-labelledby="detailTitle">
           <button class="back-button" id="backButton" type="button">← All tasks</button>
           <div class="section-heading detail-heading"><div><p class="eyebrow" id="detailMeta"></p><h1 id="detailTitle"></h1></div><span class="status" id="taskStatus"></span></div>
+          <div id="taskFlow" class="detail-flow"></div>
           <div class="next-step" id="nextStep" role="status"></div>
           <p class="caption freshness-note" id="freshnessNote" aria-live="polite"></p>
           <div class="detail-grid">
@@ -82,7 +85,7 @@
           <button class="back-button" id="demoBackButton" type="button">← All tasks</button>
           <div class="section-heading detail-heading"><div><p class="eyebrow">PRERECORDED DEMO</p><h1 id="demoTitle"></h1></div><span class="status waiting" id="demoStatus"></span></div>
           <div class="demo-disclosure"><span>Sample voices · Demo comparison</span><details class="info compact"><summary aria-label="About prerecorded examples">i</summary><p>These are prepared examples with prerecorded synthetic sample voices and scripted comparisons. The prepared comparison uses no microphone or live AI. The optional Live Gemini check sends a sample voice to Google Gemini for practice. No real worker consent or work release is recorded by these examples.</p></details></div>
-          <div id="demoNextStep" class="next-step" role="status"></div><p class="caption freshness-note" id="demoFreshness" aria-live="polite"></p>
+          <div id="demoFlow" class="detail-flow"></div><div id="demoNextStep" class="next-step" role="status"></div><p class="caption freshness-note" id="demoFreshness" aria-live="polite"></p>
           <div class="detail-grid">
             <div>
               <section class="panel" aria-labelledby="demoInstructionTitle"><div class="panel-heading"><h2 id="demoInstructionTitle">What Project manager asked</h2><span class="demo-badge">Sample voice</span></div><audio id="demoInstructionAudio" controls preload="none" controlslist="nodownload" aria-label="Sample Project manager voice"></audio><p id="demoInstruction" class="instruction-text"></p><ol id="demoRequirements" class="requirements"></ol><p class="caption">This instruction is preloaded for the example. Project manager confirmation happens after a matching worker example.</p></section>
@@ -98,10 +101,11 @@
             </div>
           </div>
         </section>
+        <section id="scenarioPage" class="hidden" aria-labelledby="scenarioTitle"></section>
         <section id="aboutPage" class="hidden" aria-labelledby="aboutTitle"><div class="panel narrow"><p class="eyebrow">HOW IT WORKS</p><h1 id="aboutTitle">A clear handoff, step by step.</h1><ol class="workflow"><li><strong>Supervisor records and reviews.</strong><span>Record the instruction with consent, check the transcript, and publish all requirements.</span></li><li><strong id="aboutRetellingTitle">Worker retells on a second device.</strong><span id="aboutRetellingHelp">The assigned worker signs in and records what they understand, in their own words.</span></li><li><strong>AI compares every requirement.</strong><span>Missing, conflicting or uncertain details keep the task blocked.</span></li><li><strong id="aboutCorrectionTitle">Supervisor explains corrections.</strong><span id="aboutCorrectionHelp">Acknowledge the differences and document the correction. The worker must record again.</span></li><li><strong>Both approve the passing attempt.</strong><span id="aboutApprovalsHelp">Each person approves the same instruction version and worker recording.</span></li><li><strong>Supervisor releases the task.</strong><span>Only a released task can proceed through this app's workflow. Follow all other required workplace approvals and procedures.</span></li></ol><p class="disclosure" id="aboutDisclosure">An AI check supports communication. It does not grant a permit, certify that a task is safe, or replace required workplace approvals. Development and unconfigured environments cannot release work.</p></div></section>
       </div>
     </main>
-    <footer>EchoCheck AI <span aria-hidden="true">·</span> Version 0.6</footer>
+    <footer>EchoCheck AI <span aria-hidden="true">·</span> Version 0.7</footer>
   </div>
 </body>
 </html>

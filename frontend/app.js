@@ -4,7 +4,7 @@
 // Nothing sensitive is persisted in browser storage.
 const $ = id => document.getElementById(id);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
-const state = {user:null, adminUser:null, viewAsUsers:[], csrf:null, health:null, task:null, demo:null, page:'tasks', capture:null, busy:false, generation:0, poll:null, pollBusy:false, currentTrusted:false, lastChecked:null, workerReferenceDraft:'', liveBusy:false};
+const state = {user:null, adminUser:null, viewAsUsers:[], csrf:null, health:null, task:null, demo:null, page:'tasks', capture:null, busy:false, generation:0, poll:null, pollBusy:false, currentTrusted:false, lastChecked:null, workerReferenceDraft:'', liveBusy:false, demos:[]};
 const statusLabels = {
   draft:'Instruction draft', recording_instruction:'Supervisor recording', transcribing_instruction:'Transcribing instruction',
   awaiting_worker_recording:'Worker recording needed', recording_worker:'Worker recording', verification_pending:'Verification in progress',
@@ -24,6 +24,7 @@ const nextSteps = {
   awaiting_approvals:'Work is blocked. The assigned worker and supervisor must each approve this exact passing attempt. The supervisor then requests release.',
   released:'This task has been released by the supervisor for this instruction version and worker attempt. Follow all other required workplace approvals and procedures.'
 };
+const PAGES = ['tasks','new','detail','demo','scenario','about'];
 const sameId = (a,b) => a != null && b != null && String(a) === String(b);
 const shortId = value => String(value || '').slice(0,8);
 const prototypeMode = () => state.health?.prototype === true || state.user?.prototype === true;
@@ -99,12 +100,12 @@ function stopTracks(capture) {
 }
 function clearTaskView(){
   document.querySelectorAll('audio').forEach(audio=>{audio.pause();audio.removeAttribute('src');audio.load();});
-  for(const id of ['taskList','detailTitle','detailMeta','instructionText','requirementList','requirementEditor','understandingContent','historyList','correctionDisplay','versionNote','approvalScope','approvalList','extractionNotice']) $(id).replaceChildren();
+  for(const id of ['taskList','dashboardSummary','taskFlow','demoFlow','scenarioPage','detailTitle','detailMeta','instructionText','requirementList','requirementEditor','understandingContent','historyList','correctionDisplay','versionNote','approvalScope','approvalList','extractionNotice']) $(id).replaceChildren();
   for(const id of ['instructionEditor','correctionText','taskTitle']) $(id).value='';
   $('workerReference').value='';$('workerReference').readOnly=false;hide('workerIdentityPanel',true);state.workerReferenceDraft='';
   $('newTaskForm').reset();$('reviewComplete').checked=false;$('approvalConsent').checked=false;$('recordConsent').checked=false;
   clearDemoView();
-  state.task=null;state.currentTrusted=false;state.lastChecked=null;state.generation++;
+  state.task=null;state.demos=[];state.currentTrusted=false;state.lastChecked=null;state.generation++;
 }
 function endSession() {
   const capture = state.capture;
@@ -167,11 +168,12 @@ async function setPage(page){
   if(!state.user) return;
   state.generation++;state.page=page;dismissNotice();
   document.querySelectorAll('audio').forEach(audio=>audio.pause());
-  for(const name of ['tasks','new','detail','demo','about']) hide(name+'Page',name !== page);
-  for(const name of ['tasks','new','about']) $(name+'Tab').classList.toggle('active',name===page || ['detail','demo'].includes(page) && name==='tasks');
+  for(const name of PAGES) hide(name+'Page',name !== page);
+  for(const name of ['tasks','new','scenario','about']) $(name+'Tab').classList.toggle('active',name===page || ['detail','demo'].includes(page) && name==='tasks');
   if(!['detail','demo'].includes(page)){state.task=null;state.demo=null;state.currentTrusted=false;state.lastChecked=null;}
   if(page==='tasks') await refreshTasks();
   if(page==='new') await loadPeople();
+  if(page==='scenario') renderScenario();
   window.scrollTo({top:0,behavior:'instant'});
 }
 async function refreshTasks(){
@@ -183,12 +185,25 @@ async function refreshTasks(){
   if(liveResult.status==='rejected' && demoResult.status==='rejected'){blockTaskList();notice('Tasks could not be loaded. Check your connection and refresh.');return;}
   const tasks=liveResult.status==='fulfilled'?(Array.isArray(liveResult.value)?liveResult.value:liveResult.value?.tasks || []):[];
   const demos=demoResult.status==='fulfilled'?(Array.isArray(demoResult.value)?demoResult.value:[]):[];
-  let html='';
-  if(demos.length) html+='<p class="list-section-label">Prerecorded examples</p>'+demos.filter(demo=>demo.kind==='prerecorded_demo').map(demo=>`<button type="button" class="task-card" data-demo-id="${esc(demo.id)}"><span class="task-info"><strong>${esc(demo.title)} <span class="demo-badge">Demo</span></strong><small>Sample voices · Prepared comparison</small></span><span class="status waiting">${esc(demoStatusLabel(demo.status))}</span></button>`).join('');
+  state.demos=demos.filter(demo=>demo.kind==='prerecorded_demo');
+  const dashboard=dashboardHtml(tasks,state.demos);
+  $('dashboardSummary').innerHTML=(tasks.length || state.demos.length)?dashboard.summary:'';
+  let html=dashboard.list;
   if(demoEnabled && demoResult.status==='rejected') html+='<div class="empty">Prerecorded demos are unavailable. Refresh to try again.</div>';
-  if(tasks.length) html+=(demos.length?'<p class="list-section-label">Your other tasks</p>':'')+tasks.map(task=>`<button type="button" class="task-card" data-task-id="${esc(task.id)}"><span class="task-info"><strong>${esc(task.title)}</strong><small>Task ${esc(shortId(task.id))}${task.instruction_revision ? ' · Instruction '+esc(task.instruction_revision) : ''}</small></span>${statusBadge(task)}</button>`).join('');
   if(liveResult.status==='rejected') html+='<div class="empty">Your other tasks could not be checked. Reconnect and refresh.</div>';
   $('taskList').innerHTML=html || `<div class="empty">${esc(prototypeMode()?workflowRole()==='admin'?'No tasks yet. Choose Project manager above to create the first instruction.':'No tasks assigned yet. Project managers create instructions. Assigned Supervisors record workers’ understanding.':'No tasks assigned yet. Supervisors can create a task. Workers will see tasks assigned to their account.')}</div>`;
+}
+function renderScenario(){
+  $('scenarioPage').innerHTML=scenarioHtml();
+  $('scenarioDemoButton').addEventListener('click',()=>void openScenarioDemo());
+}
+async function openScenarioDemo(){
+  try{
+    const demos=state.demos?.length?state.demos:await api('/prototype/demos');
+    const demo=(demos || []).find(item=>item.scenario_id==='demo-01-carton-quantities');
+    if(!demo){notice('The Cartons and bottles demo is not available in this view. Choose Supervisor or Project manager.');return;}
+    if(await openDemo(demo.id) && workflowRole()==='admin') notice('You are viewing as Admin. Choose Supervisor in “View as” to compare, correct and confirm.',true);
+  }catch(error){notice(error.message);}
 }
 function blockTaskList(){ $('taskList').innerHTML='<div class="empty">Task status unavailable · work blocked. Reconnect and refresh to check the current instructions.</div>'; }
 async function loadPeople(){
@@ -209,8 +224,8 @@ async function openTask(id){
     if(!state.user || generation!==state.generation) return;
     if(!sameId(state.task?.id,task.id)) state.workerReferenceDraft=task.worker_reference || '';
     state.task=task;state.demo=null;state.page='detail';state.currentTrusted=true;state.lastChecked=Date.now();
-    for(const name of ['tasks','new','detail','demo','about']) hide(name+'Page',name!=='detail');
-    $('tasksTab').classList.add('active');$('newTab').classList.remove('active');$('aboutTab').classList.remove('active');
+    for(const name of PAGES) hide(name+'Page',name!=='detail');
+    $('tasksTab').classList.add('active');for(const tab of ['newTab','scenarioTab','aboutTab']) $(tab).classList.remove('active');
     renderTask();window.scrollTo({top:0,behavior:'instant'});
     return true;
   } catch(error){notice(error.message);return false;}
@@ -271,6 +286,7 @@ function renderTask(){
   const task=state.task;if(!task) return;
   const supervisor=isSupervisor(task),worker=isWorker(task),attempt=task.latest_attempt;
   $('detailTitle').textContent=task.title;
+  $('taskFlow').innerHTML=flowMapHtml(flowForTask(task));
   $('detailMeta').textContent=`TASK ${shortId(task.id)}`;
   $('instructionText').textContent=task.instruction || 'No reviewed instruction has been published yet.';
   $('requirementList').innerHTML=(task.requirements || []).map(requirement=>`<li>${esc(requirement.text)}</li>`).join('');
@@ -393,8 +409,8 @@ async function openDemo(id){
     if(!validDemo(demo)) throw new RequestError('This example could not be identified as a prerecorded demo. Refresh the task list.');
     if(!state.user || generation!==state.generation) return false;
     state.task=null;state.demo=demo;state.page='demo';state.currentTrusted=true;state.lastChecked=Date.now();
-    for(const page of ['tasks','new','detail','demo','about']) hide(page+'Page',page!=='demo');
-    $('tasksTab').classList.add('active');$('newTab').classList.remove('active');$('aboutTab').classList.remove('active');
+    for(const page of PAGES) hide(page+'Page',page!=='demo');
+    $('tasksTab').classList.add('active');for(const tab of ['newTab','scenarioTab','aboutTab']) $(tab).classList.remove('active');
     renderDemo();window.scrollTo({top:0,behavior:'instant'});return true;
   }catch(error){notice(error.message);return false;}
 }
@@ -410,6 +426,7 @@ function renderDemo(){
   const demo=state.demo;if(!validDemo(demo)) return;
   const attempt=demo.latest_attempt;
   $('demoTitle').textContent=demo.title;
+  $('demoFlow').innerHTML=flowMapHtml(flowForDemo(demo));
   $('demoInstruction').textContent=demo.instruction?.text || '';
   $('demoRequirements').innerHTML=(demo.instruction?.requirements || []).map(requirement=>`<li>${esc(requirement.text)}</li>`).join('');
   const instructionUrl=demoAudioUrl(demo,'instruction');
@@ -689,6 +706,7 @@ document.addEventListener('play',event=>{if(event.target.tagName==='AUDIO' && ev
 $('tasksTab').addEventListener('click',()=>void setPage('tasks'));
 $('newTab').addEventListener('click',()=>void setPage('new'));
 $('aboutTab').addEventListener('click',()=>void setPage('about'));
+$('scenarioTab').addEventListener('click',()=>void setPage('scenario'));
 $('backButton').addEventListener('click',()=>void setPage('tasks'));
 $('refreshButton').addEventListener('click',async()=>{await loadHealth();await refreshTasks();});
 document.querySelector('.brand').addEventListener('click',event=>{event.preventDefault();if(state.user) void setPage('tasks');});
