@@ -1,6 +1,6 @@
 # Live Gemini benchmark on the prerecorded samples
 
-Each of the 28 synthetic worker clips (7 scenarios × 4 variants) was sent through the deployed live check: Gemini transcribes the audio and compares it with every requirement; the server derives the decision. Expected decisions are the curated labels. Measured through the app's own live-check API on a local server calling Gemini 3.5 Flash on Vertex AI (the same code and model the Cloud Run deployment uses). Synthetic English TTS audio only — this is not a field accuracy measurement.
+Each of the 28 synthetic worker clips (7 scenarios × 4 variants) was sent through the live check: Gemini transcribes the audio and compares it with every requirement; the server derives the decision. Expected decisions are the curated labels. Measured through the app's own live-check API on a local server calling Gemini 3.5 Flash on Vertex AI (the same code and model the Cloud Run deployment uses). Synthetic English TTS audio only — this is not a field accuracy measurement.
 
 ```json
 {
