@@ -12,4 +12,3 @@ tests
 docs
 dataset/*
 !dataset/demo_scenarios_v1.json
-.claude
