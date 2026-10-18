@@ -1,0 +1,1279 @@
+{
+  "schema_version": 1,
+  "catalog_id": "echocheck-generic-plant-demo-v1",
+  "activation_status": "approved_for_isolated_prototype_demo",
+  "source": "curated_expected_result",
+  "evidence_kind": "scripted_demo_fixture",
+  "language": "en",
+  "disclosure": "Fictional examples with synthetic sample voices and prepared comparisons. These are not real worker recordings, consent, live AI results, or permission to work.",
+  "scenarios": [
+    {
+      "id": "demo-01-carton-quantities",
+      "title": "Cartons and bottles",
+      "focus": [
+        "quantity_reversal",
+        "equal_total_is_not_equal_packing"
+      ],
+      "worker_reference": "Fictional demo worker 01",
+      "instruction": {
+        "transcript": "Pack exactly 12 cartons with 24 bottles in each carton. Apply a blue label to every carton.",
+        "requirements": [
+          {
+            "id": "r1",
+            "text": "Pack exactly 12 cartons."
+          },
+          {
+            "id": "r2",
+            "text": "Put 24 bottles in each carton."
+          },
+          {
+            "id": "r3",
+            "text": "Apply a blue label to every carton."
+          }
+        ],
+        "audio_asset": {
+          "path": "audio/demo-01-carton-quantities/instruction.wav",
+          "mime_type": "audio/wav",
+          "origin": "synthetic_tts",
+          "generation_status": "generated",
+          "sha256": "a652f008b75b6074a3ef52656be377a23978183749ac8bd705f2fa078be958e7"
+        }
+      },
+      "correction_suggestion": "Use 12 cartons with 24 bottles in each carton. Keeping the same overall bottle total does not make 24 cartons with 12 bottles each equivalent. Keep the blue labels.",
+      "variants": {
+        "correct": {
+          "transcript": "I will pack 12 cartons. I will put 24 bottles in each carton. I will apply a blue label to every carton.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will pack 12 cartons."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will put 24 bottles in each carton."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will apply a blue label to every carton."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "All three packing requirements are explicitly retold."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-01-carton-quantities/correct.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "45b8458d6e8a11f742f5026cb3bc5bc9109c5ed7fcbb3e56034d2d6f8b699bef"
+          }
+        },
+        "incorrect": {
+          "transcript": "I will pack 24 cartons. I will put 12 bottles in each carton. I will apply a blue label to every carton.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "contradiction",
+                "evidence": "I will pack 24 cartons."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "I will put 12 bottles in each carton."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will apply a blue label to every carton."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The carton count and bottles per carton were reversed."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-01-carton-quantities/incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "a2cf9c2bc2f54ba0deecd30abdf7ad2bec135bc095e92d71c073315f8b9469a9"
+          }
+        },
+        "corrected": {
+          "transcript": "I understand the correction. I will pack 12 cartons. I will put 24 bottles in each carton. I will apply a blue label to every carton.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will pack 12 cartons."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will put 24 bottles in each carton."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will apply a blue label to every carton."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The new retelling corrects both quantities and preserves the label requirement."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-01-carton-quantities/corrected.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "846da2b3126523c94ad1eba8709e42ccdf01cf7ac19a2389b117cb7329111277"
+          }
+        },
+        "still_incorrect": {
+          "transcript": "I will pack 12 cartons. I will put 12 bottles in each carton. I will apply a blue label to every carton.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will pack 12 cartons."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "I will put 12 bottles in each carton."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will apply a blue label to every carton."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The carton count is corrected, but each carton still has too few bottles."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-01-carton-quantities/still_incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "17c690073621a2aa9324e74431311d1a6f4e20b34ad90d67c4e652fc528fe87e"
+          }
+        }
+      }
+    },
+    {
+      "id": "demo-02-every-carton",
+      "title": "Check every carton",
+      "focus": [
+        "missing_requirement",
+        "all_versus_first",
+        "sequence"
+      ],
+      "worker_reference": "Fictional demo worker 02",
+      "instruction": {
+        "transcript": "Inspect the outside of every carton before sealing it. Add a checked sticker only after checking that carton. Set damaged cartons aside before dispatch.",
+        "requirements": [
+          {
+            "id": "r1",
+            "text": "Inspect the outside of every carton before sealing it."
+          },
+          {
+            "id": "r2",
+            "text": "Add a checked sticker only after checking that carton."
+          },
+          {
+            "id": "r3",
+            "text": "Set damaged cartons aside before dispatch."
+          }
+        ],
+        "audio_asset": {
+          "path": "audio/demo-02-every-carton/instruction.wav",
+          "mime_type": "audio/wav",
+          "origin": "synthetic_tts",
+          "generation_status": "generated",
+          "sha256": "14418c0323606560625620e25dd3358cc23e48ddb154f914902fa868a4fbcfcf"
+        }
+      },
+      "correction_suggestion": "Check every carton before sealing. A checked sticker goes on only after that carton is checked. Include what you will do with damaged cartons in your next explanation.",
+      "variants": {
+        "correct": {
+          "transcript": "I will inspect the outside of every carton before sealing it. After checking a carton, I will add its checked sticker. I will set damaged cartons aside before dispatch.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will inspect the outside of every carton before sealing it."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "After checking a carton, I will add its checked sticker."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will set damaged cartons aside before dispatch."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "Inspection scope, sticker order, and damaged-carton handling are all retold."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-02-every-carton/correct.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "592f687fc4c30fb1fcc2e08b21d7b7a6473967fd368fa4173e1e544d9225e986"
+          }
+        },
+        "incorrect": {
+          "transcript": "I will seal the cartons first and then inspect only the first carton. I will put checked stickers on every carton before inspection.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "contradiction",
+                "evidence": "I will seal the cartons first and then inspect only the first carton."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "I will put checked stickers on every carton before inspection."
+              },
+              {
+                "id": "r3",
+                "status": "missing",
+                "evidence": ""
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "Only one carton would be checked after sealing; stickers would be applied too soon, and damaged cartons were not discussed."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-02-every-carton/incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "b6aa760f56a58a4b1cdb072d7898c630768aa9592114bedbf41f09015d7088c8"
+          }
+        },
+        "corrected": {
+          "transcript": "I understand the correction. I will inspect the outside of every carton before sealing it. After checking a carton, I will add its checked sticker. I will set damaged cartons aside before dispatch.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will inspect the outside of every carton before sealing it."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "After checking a carton, I will add its checked sticker."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will set damaged cartons aside before dispatch."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The fresh retelling includes all three requirements in the required order."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-02-every-carton/corrected.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "d6e099a04ebf807f1a8bfa9ae78b7dfd4f546fd8cb03b2cbdc907303b24d3dd7"
+          }
+        },
+        "still_incorrect": {
+          "transcript": "I will inspect the outside of every carton before sealing it. I will put checked stickers on the cartons before inspection. I will set damaged cartons aside before dispatch.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will inspect the outside of every carton before sealing it."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "I will put checked stickers on the cartons before inspection."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will set damaged cartons aside before dispatch."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The sticker is still being applied before the check."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-02-every-carton/still_incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "0b2c27a7b209ba69ba44ccdbc48d73c6cb82d9eac4dfd89e02ce996c76ad0ccc"
+          }
+        }
+      }
+    },
+    {
+      "id": "demo-03-lot-labels",
+      "title": "Label colour and lot",
+      "focus": [
+        "label_colour",
+        "identifier_transposition",
+        "lot_separation"
+      ],
+      "worker_reference": "Fictional demo worker 03",
+      "instruction": {
+        "transcript": "Put a blue label on every carton. Each label must say Lot A17. Keep these cartons separate from Lot A71.",
+        "requirements": [
+          {
+            "id": "r1",
+            "text": "Put a blue label on every carton."
+          },
+          {
+            "id": "r2",
+            "text": "Each label must say Lot A17."
+          },
+          {
+            "id": "r3",
+            "text": "Keep Lot A17 separate from Lot A71."
+          }
+        ],
+        "audio_asset": {
+          "path": "audio/demo-03-lot-labels/instruction.wav",
+          "mime_type": "audio/wav",
+          "origin": "synthetic_tts",
+          "generation_status": "generated",
+          "sha256": "bb8943f7f32af16e2d933fc48cd03c65b42e46aad88e9d178ebe2f0be995efd8"
+        }
+      },
+      "correction_suggestion": "Use blue labels reading Lot A17, not Lot A71. Keep the two lots separate. Repeat the colour, the exact lot code, and the separation instruction.",
+      "variants": {
+        "correct": {
+          "transcript": "I will put a blue label on every carton. Each label will say Lot A17. I will keep Lot A17 separate from Lot A71.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will put a blue label on every carton."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "Each label will say Lot A17."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will keep Lot A17 separate from Lot A71."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The label colour, exact lot code, and separation all match."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-03-lot-labels/correct.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "c27ff7791cd9e82ec6d61ae382bd4bb9458c2f2ec6e46b0b2a32c733064c6416"
+          }
+        },
+        "incorrect": {
+          "transcript": "I will put a red label on every carton. Each label will say Lot A71. I will mix Lot A17 with Lot A71.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "contradiction",
+                "evidence": "I will put a red label on every carton."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "Each label will say Lot A71."
+              },
+              {
+                "id": "r3",
+                "status": "contradiction",
+                "evidence": "I will mix Lot A17 with Lot A71."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The colour, lot code, and lot separation all differ from the instruction."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-03-lot-labels/incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "e73badce3202e6458e65f60213767756dd971018dd5fa2234ee60ff279c67827"
+          }
+        },
+        "corrected": {
+          "transcript": "I understand the correction. I will put a blue label on every carton. Each label will say Lot A17. I will keep Lot A17 separate from Lot A71.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will put a blue label on every carton."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "Each label will say Lot A17."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will keep Lot A17 separate from Lot A71."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The corrected retelling now matches all label and separation details."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-03-lot-labels/corrected.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "34f0da696c7bc0d40af9631ca8a6578fd52c69ad2e8c7b2da197ae985033b697"
+          }
+        },
+        "still_incorrect": {
+          "transcript": "I will put a blue label on every carton. Each label will say Lot A71. I will keep Lot A17 separate from Lot A71.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will put a blue label on every carton."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "Each label will say Lot A71."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will keep Lot A17 separate from Lot A71."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The colour and separation are corrected, but the lot code is still A71 instead of A17."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-03-lot-labels/still_incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "c32583478d91c87a9041faa3ff52b955f6e36e6fde650032ebfda19fa4dc5100"
+          }
+        }
+      }
+    },
+    {
+      "id": "demo-04-order-and-time",
+      "title": "Order and handoff time",
+      "focus": [
+        "sequence",
+        "destination",
+        "deadline"
+      ],
+      "worker_reference": "Fictional demo worker 04",
+      "instruction": {
+        "transcript": "Count the items before sealing the cartons. Move the sealed cartons to bay 2. Complete the handoff by 14:30.",
+        "requirements": [
+          {
+            "id": "r1",
+            "text": "Count the items before sealing the cartons."
+          },
+          {
+            "id": "r2",
+            "text": "Move the sealed cartons to bay 2."
+          },
+          {
+            "id": "r3",
+            "text": "Complete the handoff by 14:30."
+          }
+        ],
+        "audio_asset": {
+          "path": "audio/demo-04-order-and-time/instruction.wav",
+          "mime_type": "audio/wav",
+          "origin": "synthetic_tts",
+          "generation_status": "generated",
+          "sha256": "6f6276b4d596bb7c695bb846a8fe52cdd84bb89e1037310af7adf7da7281284e"
+        }
+      },
+      "correction_suggestion": "Count before sealing, then take the sealed cartons to bay 2. The handoff deadline is 14:30, not 15:30. Repeat the order and the time.",
+      "variants": {
+        "correct": {
+          "transcript": "I will count the items before sealing the cartons. I will move the sealed cartons to bay 2. I will complete the handoff by 14:30.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will count the items before sealing the cartons."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will move the sealed cartons to bay 2."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will complete the handoff by 14:30."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The sequence, destination, and deadline all match."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-04-order-and-time/correct.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "92abf31c7eb9b0f1636a05790763eda433113d733a3f1de3a5f04c8ac77c6139"
+          }
+        },
+        "incorrect": {
+          "transcript": "I will seal the cartons before counting the items. I will move the sealed cartons to bay 2. I will complete the handoff by 15:30.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "contradiction",
+                "evidence": "I will seal the cartons before counting the items."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will move the sealed cartons to bay 2."
+              },
+              {
+                "id": "r3",
+                "status": "contradiction",
+                "evidence": "I will complete the handoff by 15:30."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "Counting would happen after sealing, and the handoff would be an hour late."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-04-order-and-time/incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "a7f264967d19ec0c90f1aaf26ac2a6090a950e39317be2ca564c0b650468044e"
+          }
+        },
+        "corrected": {
+          "transcript": "I understand the correction. I will count the items before sealing the cartons. I will move the sealed cartons to bay 2. I will complete the handoff by 14:30.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will count the items before sealing the cartons."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will move the sealed cartons to bay 2."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will complete the handoff by 14:30."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The new retelling corrects the sequence and deadline while retaining bay 2."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-04-order-and-time/corrected.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "e2cf857b476c203f256fac7b0dcc08da88c618ee44d8d1735a64cef899bcf6fb"
+          }
+        },
+        "still_incorrect": {
+          "transcript": "I will count the items before sealing the cartons. I will move the sealed cartons to bay 2. I will complete the handoff by 15:30.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will count the items before sealing the cartons."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will move the sealed cartons to bay 2."
+              },
+              {
+                "id": "r3",
+                "status": "contradiction",
+                "evidence": "I will complete the handoff by 15:30."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The order is corrected, but the stated deadline is still too late."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-04-order-and-time/still_incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "b662b9ff8f6b25ce41c8b78c70a8e388250b70b78a61b5110ad27442b733e776"
+          }
+        }
+      }
+    },
+    {
+      "id": "demo-05-destination-and-extras",
+      "title": "Destination and extra actions",
+      "focus": [
+        "destination",
+        "extra_action",
+        "required_coverage_is_not_sufficient"
+      ],
+      "worker_reference": "Fictional demo worker 05",
+      "instruction": {
+        "transcript": "Move 8 sealed cartons to bay 7. Keep their seals intact. Leave their labels unchanged.",
+        "requirements": [
+          {
+            "id": "r1",
+            "text": "Move 8 sealed cartons to bay 7."
+          },
+          {
+            "id": "r2",
+            "text": "Keep the cartons' seals intact."
+          },
+          {
+            "id": "r3",
+            "text": "Leave the cartons' labels unchanged."
+          }
+        ],
+        "audio_asset": {
+          "path": "audio/demo-05-destination-and-extras/instruction.wav",
+          "mime_type": "audio/wav",
+          "origin": "synthetic_tts",
+          "generation_status": "generated",
+          "sha256": "7c8ebd65552e0e09e1b419b2c1a29ec6f55fe6f504299b1db8f09a03cca0d944"
+        }
+      },
+      "correction_suggestion": "Move only the assigned 8 cartons to bay 7 and leave their seals and labels unchanged. The task does not include moving any nearby cartons to bay 9.",
+      "variants": {
+        "correct": {
+          "transcript": "I will move 8 sealed cartons to bay 7. I will keep their seals intact. I will leave their labels unchanged.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will move 8 sealed cartons to bay 7."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will keep their seals intact."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will leave their labels unchanged."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The assigned movement and preservation of seals and labels all match, with no added action."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-05-destination-and-extras/correct.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "cccc15acf8597c36e2d6a6a1096fdefcf990c965d0e5337b27995784ca28900f"
+          }
+        },
+        "incorrect": {
+          "transcript": "I will move 8 sealed cartons to bay 9. I will keep their seals intact. I will leave their labels unchanged. I will also move the nearby cartons to bay 9.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "contradiction",
+                "evidence": "I will move 8 sealed cartons to bay 9."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will keep their seals intact."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will leave their labels unchanged."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [
+              "I will also move the nearby cartons to bay 9."
+            ],
+            "uncertainties": [],
+            "summary": "The assigned destination is wrong, and moving nearby cartons is an additional action."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-05-destination-and-extras/incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "c11124c6b6b72bf721d2361ecf591ef2aea1315a5276f7ed21752dea2f2f653e"
+          }
+        },
+        "corrected": {
+          "transcript": "I understand the correction. I will move 8 sealed cartons to bay 7. I will keep their seals intact. I will leave their labels unchanged.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will move 8 sealed cartons to bay 7."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will keep their seals intact."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will leave their labels unchanged."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The destination is corrected, and the extra movement is no longer proposed."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-05-destination-and-extras/corrected.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "93f20360ed4cbce4c690a30ed3be2eab72e61ea4f4e8dc5611833195f88959f8"
+          }
+        },
+        "still_incorrect": {
+          "transcript": "I will move 8 sealed cartons to bay 7. I will keep their seals intact. I will leave their labels unchanged. I will also move the nearby cartons to bay 9.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will move 8 sealed cartons to bay 7."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will keep their seals intact."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will leave their labels unchanged."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [
+              "I will also move the nearby cartons to bay 9."
+            ],
+            "uncertainties": [],
+            "summary": "Every assigned requirement matches, but the unrequested movement still blocks the check."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-05-destination-and-extras/still_incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "16a5d29feee23ad5902ea563580940ae6ad6ca1d748b7ebdc533a2de977fe7be"
+          }
+        }
+      }
+    },
+    {
+      "id": "demo-06-sorting-and-negation",
+      "title": "Sorting and exclusions",
+      "focus": [
+        "negation",
+        "separation",
+        "count_exclusion"
+      ],
+      "worker_reference": "Fictional demo worker 06",
+      "instruction": {
+        "transcript": "Place 12 empty cartons in the counting area. Keep large cartons separate from small cartons. Do not include red-tagged cartons in the 12-carton count.",
+        "requirements": [
+          {
+            "id": "r1",
+            "text": "Place 12 empty cartons in the counting area."
+          },
+          {
+            "id": "r2",
+            "text": "Keep large cartons separate from small cartons."
+          },
+          {
+            "id": "r3",
+            "text": "Do not include red-tagged cartons in the 12-carton count."
+          }
+        ],
+        "audio_asset": {
+          "path": "audio/demo-06-sorting-and-negation/instruction.wav",
+          "mime_type": "audio/wav",
+          "origin": "synthetic_tts",
+          "generation_status": "generated",
+          "sha256": "08d6bc189307d72f7b73d05c09c1abfc12ad49643b6a34c7dc4faab8160fdd08"
+        }
+      },
+      "correction_suggestion": "Keep large and small cartons separate. Red-tagged cartons must stay out of this count. Repeat both the separation and the exclusion as well as the quantity.",
+      "variants": {
+        "correct": {
+          "transcript": "I will place 12 empty cartons in the counting area. I will keep large cartons separate from small cartons. I will leave red-tagged cartons out of the 12-carton count.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will place 12 empty cartons in the counting area."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will keep large cartons separate from small cartons."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will leave red-tagged cartons out of the 12-carton count."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The quantity, separation, and explicit exclusion all match."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-06-sorting-and-negation/correct.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "2f113c27bf643a0ee0cbfb7047f420633ce209457f71c44a16715b54658e1d6b"
+          }
+        },
+        "incorrect": {
+          "transcript": "I will place 12 empty cartons in the counting area. I will mix large and small cartons together. I will include red-tagged cartons in the 12-carton count.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will place 12 empty cartons in the counting area."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "I will mix large and small cartons together."
+              },
+              {
+                "id": "r3",
+                "status": "contradiction",
+                "evidence": "I will include red-tagged cartons in the 12-carton count."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The worker reverses both the separation instruction and the red-tag exclusion."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-06-sorting-and-negation/incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "490a34e1dac92e80a3b22878f21614e696c3a10b9eb4e90088518409aa43cb57"
+          }
+        },
+        "corrected": {
+          "transcript": "I understand the correction. I will place 12 empty cartons in the counting area. I will keep large cartons separate from small cartons. I will leave red-tagged cartons out of the 12-carton count.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will place 12 empty cartons in the counting area."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will keep large cartons separate from small cartons."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will leave red-tagged cartons out of the 12-carton count."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The corrected retelling preserves the separation and the excluded cartons."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-06-sorting-and-negation/corrected.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "0171472d6a9fbd6dcc1b78dedeeaf14bcc473f5812675082fe7210848363d0f1"
+          }
+        },
+        "still_incorrect": {
+          "transcript": "I will place 12 empty cartons in the counting area. I will keep large cartons separate from small cartons. I will include red-tagged cartons in the 12-carton count.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will place 12 empty cartons in the counting area."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will keep large cartons separate from small cartons."
+              },
+              {
+                "id": "r3",
+                "status": "contradiction",
+                "evidence": "I will include red-tagged cartons in the 12-carton count."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The carton sizes are separated, but the exclusion is still reversed."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-06-sorting-and-negation/still_incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "2cecfd7df39e2e596c02df78db4c63d3ee1a2fa4f86367acad68a537718f2b89"
+          }
+        }
+      }
+    },
+    {
+      "id": "demo-07-uncertain-quantity",
+      "title": "A quantity is still uncertain",
+      "focus": [
+        "quantity_reversal",
+        "uncertainty",
+        "review_required"
+      ],
+      "worker_reference": "Fictional demo worker 07",
+      "instruction": {
+        "transcript": "Pack 10 trays with 6 parts in each tray. Keep Lot B12 separate from other lots. Attach a white label to every tray.",
+        "requirements": [
+          {
+            "id": "r1",
+            "text": "Pack 10 trays."
+          },
+          {
+            "id": "r2",
+            "text": "Put 6 parts in each tray."
+          },
+          {
+            "id": "r3",
+            "text": "Keep Lot B12 separate from other lots."
+          },
+          {
+            "id": "r4",
+            "text": "Attach a white label to every tray."
+          }
+        ],
+        "audio_asset": {
+          "path": "audio/demo-07-uncertain-quantity/instruction.wav",
+          "mime_type": "audio/wav",
+          "origin": "synthetic_tts",
+          "generation_status": "generated",
+          "sha256": "818729c6c679254e7f1394518a58806b03fa57cb643a61b084ca7be2894e1c18"
+        }
+      },
+      "correction_suggestion": "The instruction is 10 trays with exactly 6 parts in each tray. Keep Lot B12 separate and label every tray white. If the quantity is still unclear, ask again before proceeding.",
+      "variants": {
+        "correct": {
+          "transcript": "I will pack 10 trays. I will put 6 parts in each tray. I will keep Lot B12 separate from other lots. I will attach a white label to every tray.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will pack 10 trays."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will put 6 parts in each tray."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will keep Lot B12 separate from other lots."
+              },
+              {
+                "id": "r4",
+                "status": "matched",
+                "evidence": "I will attach a white label to every tray."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "Tray quantity, parts per tray, lot separation, and labels all match."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-07-uncertain-quantity/correct.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "219a1c4df857c6e678b03cce4a351f10bd647f131f8bb065c65ae527c91ffccb"
+          }
+        },
+        "incorrect": {
+          "transcript": "I will pack 6 trays. I will put 10 parts in each tray. I will mix Lot B12 with the other lots. I will attach a white label to every tray.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "contradiction",
+                "evidence": "I will pack 6 trays."
+              },
+              {
+                "id": "r2",
+                "status": "contradiction",
+                "evidence": "I will put 10 parts in each tray."
+              },
+              {
+                "id": "r3",
+                "status": "contradiction",
+                "evidence": "I will mix Lot B12 with the other lots."
+              },
+              {
+                "id": "r4",
+                "status": "matched",
+                "evidence": "I will attach a white label to every tray."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "Both quantities are reversed and the lot would be mixed."
+          },
+          "expected_decision": "discrepancy",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-07-uncertain-quantity/incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "64079bc246f9aaeca446677c33164ea5feef9fca4017253cb99fe7f28d74835b"
+          }
+        },
+        "corrected": {
+          "transcript": "I understand the correction. I will pack 10 trays. I will put 6 parts in each tray. I will keep Lot B12 separate from other lots. I will attach a white label to every tray.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will pack 10 trays."
+              },
+              {
+                "id": "r2",
+                "status": "matched",
+                "evidence": "I will put 6 parts in each tray."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will keep Lot B12 separate from other lots."
+              },
+              {
+                "id": "r4",
+                "status": "matched",
+                "evidence": "I will attach a white label to every tray."
+              }
+            ],
+            "complete": true,
+            "extra_actions": [],
+            "uncertainties": [],
+            "summary": "The fresh retelling explicitly resolves all quantities and the separation requirement."
+          },
+          "expected_decision": "passed",
+          "expected_pass": true,
+          "audio_asset": {
+            "path": "audio/demo-07-uncertain-quantity/corrected.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "1fa06ba797d089b8e4439c8e020dec766efb5ad6c553b30e9ad4e2b44cc5747e"
+          }
+        },
+        "still_incorrect": {
+          "transcript": "I will pack 10 trays. I think each tray needs 6 or 10 parts; I am still not sure. I will keep Lot B12 separate from other lots. I will attach a white label to every tray.",
+          "evaluation": {
+            "requirements": [
+              {
+                "id": "r1",
+                "status": "matched",
+                "evidence": "I will pack 10 trays."
+              },
+              {
+                "id": "r2",
+                "status": "uncertain",
+                "evidence": "I think each tray needs 6 or 10 parts; I am still not sure."
+              },
+              {
+                "id": "r3",
+                "status": "matched",
+                "evidence": "I will keep Lot B12 separate from other lots."
+              },
+              {
+                "id": "r4",
+                "status": "matched",
+                "evidence": "I will attach a white label to every tray."
+              }
+            ],
+            "complete": false,
+            "extra_actions": [],
+            "uncertainties": [
+              "The worker explicitly remains unsure whether each tray needs 6 or 10 parts."
+            ],
+            "summary": "The worker still cannot confirm how many parts belong in each tray."
+          },
+          "expected_decision": "review_required",
+          "expected_pass": false,
+          "audio_asset": {
+            "path": "audio/demo-07-uncertain-quantity/still_incorrect.wav",
+            "mime_type": "audio/wav",
+            "origin": "synthetic_tts",
+            "generation_status": "generated",
+            "sha256": "1a885e50f94c5d39778066241f6b999609ca1ddf253a76cc3e0fcc3dc1e8a7cd"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+EchoCheck AI v0.5 — 18 October 2026
+
+Full suite:
+python -m pytest -q -W error -p no:cacheprovider
+220 passed in 125.92s (0:02:05)
+
+Targeted demo suite:
+45 passed in 31.13s
+
+Frontend:
+38 demo DOM/API contract checks passed.
+22 retained live-workflow DOM contract checks passed.
+JavaScript syntax, 149 unique HTML IDs/references, CSP and cache v0.5 checked.
+
+Media:
+35 spoken WAV samples passed existing server audio validation.
+35 unique checksums bound to scripts in manifest.json.
+
+Browser:
+Seven Project-manager cards visible.
+Instruction audio decoded and played to completion, no media error.
+Incorrect -> acknowledge -> still incorrect -> acknowledge -> corrected -> Supervisor review -> Project manager confirmation -> Demo complete -> Repeat verified.
+390x844 responsive viewport: no horizontal overflow.
+Viewport restored; test session signed out.
+
+No microphone, personal worker voice or external speech/AI provider was used.

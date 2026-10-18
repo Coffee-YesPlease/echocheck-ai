@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="referrer" content="same-origin">
+  <title>EchoCheck AI · Clarity before action</title>
+  <link rel="stylesheet" href="/assets/style.css?v=0.5">
+  <script defer src="/assets/app.js?v=0.5"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="shell">
+    <header class="app-header">
+      <a class="brand" href="#tasks" aria-label="EchoCheck AI home"><span class="brand-mark" aria-hidden="true">≋</span><span>EchoCheck <span class="brand-ai">AI</span><small>Clarity before action</small></span></a>
+      <div class="session hidden" id="session"><span id="sessionName"></span><button class="text-button" id="logoutButton" type="button">Sign out</button></div>
+    </header>
+    <main id="main">
+      <div class="environment" id="environment" role="status"><span id="environmentText">Checking the service…</span><details class="info compact hidden" id="prototypeInfo"><summary aria-label="About prototype mode">i</summary><p>Explore the workflow using the three prototype accounts. Admin can switch views without signing out. Release to real work is disabled in this preview.</p></details></div>
+      <div class="view-as-panel hidden" id="viewAsPanel"><div><label for="viewAsSelect">View as</label><p>Switch roles while staying signed in as Admin.</p></div><select id="viewAsSelect" aria-label="View as"><option value="">Admin</option></select></div>
+      <div class="notice hidden" id="notice" role="alert" tabindex="-1"><span id="noticeText"></span><button type="button" class="icon-button" id="dismissNotice" aria-label="Dismiss message">×</button></div>
+      <section id="loginPage" class="login-wrap hidden" aria-labelledby="loginTitle">
+        <div class="panel login-panel">
+          <p class="eyebrow">WELCOME</p><h1 id="loginTitle">A shared understanding.<br>Before the work starts.</h1>
+          <p id="loginIntro">Sign in with your own assigned account. Each person approves from their own session.</p>
+          <div id="prototypeLogins" class="prototype-logins hidden" aria-label="Prototype accounts"></div>
+          <form id="loginForm">
+            <label for="username">Username</label><input id="username" name="username" autocomplete="username" required maxlength="80" autocapitalize="none" spellcheck="false">
+            <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required maxlength="1024">
+            <button class="button full" id="loginButton" type="submit">Sign in</button>
+          </form>
+          <details class="info"><summary aria-label="About accounts">i <span>About accounts</span></summary><p id="accountsHelp">Accounts and assignments are created by your administrator. A worker and supervisor must be different people. The worker records on a second device.</p></details>
+        </div>
+      </section>
+      <div id="workspace" class="hidden">
+        <nav class="tabs" aria-label="Workspace"><button class="tab active" id="tasksTab" type="button">Tasks</button><button class="tab hidden" id="newTab" type="button">New task</button><button class="tab" id="aboutTab" type="button">How it works</button></nav>
+        <section id="tasksPage" aria-labelledby="tasksTitle">
+          <div class="section-heading"><div><p class="eyebrow">YOUR WORKSPACE</p><h1 id="tasksTitle">Every instruction, understood.</h1><p>Open a task to see its next required step.</p></div><button type="button" class="button secondary" id="refreshButton">Refresh</button></div>
+          <p class="admin-overview hidden" id="adminOverviewNotice">Admin overview · Choose Project manager or Supervisor above to try that role. Admin can view tasks but does not give task approvals.</p>
+          <div id="taskList" class="task-list" aria-live="polite"></div>
+        </section>
+        <section id="newPage" class="hidden" aria-labelledby="newTitle">
+          <div class="panel narrow"><p class="eyebrow">STEP 1 · ASSIGN</p><h1 id="newTitle">Create a task.</h1><p>Next, record the instruction in your own voice and review its requirements.</p>
+            <form id="newTaskForm"><label for="taskTitle">Task title</label><input id="taskTitle" name="title" maxlength="120" required placeholder="For example, Dispatch preparation">
+              <label for="workerId" id="assignedOperatorLabel">Assigned worker</label><select id="workerId" name="worker_id" required><option value="">Choose a worker</option></select>
+              <details class="info"><summary id="assignmentInfo" aria-label="About worker assignment">i <span id="assignmentQuestion">Why assign a worker?</span></summary><p id="assignmentHelp">Only this worker can record their understanding and give worker approval. Share the task ID through your approved workplace channel; the worker signs in on a second device.</p></details>
+              <button class="button" id="createButton" type="submit">Create task</button>
+            </form>
+          </div>
+        </section>
+        <section id="detailPage" class="hidden" aria-labelledby="detailTitle">
+          <button class="back-button" id="backButton" type="button">← All tasks</button>
+          <div class="section-heading detail-heading"><div><p class="eyebrow" id="detailMeta"></p><h1 id="detailTitle"></h1></div><span class="status" id="taskStatus"></span></div>
+          <div class="next-step" id="nextStep" role="status"></div>
+          <p class="caption freshness-note" id="freshnessNote" aria-live="polite"></p>
+          <div class="detail-grid">
+            <div>
+              <section class="panel" aria-labelledby="instructionTitle"><div class="panel-heading"><h2 id="instructionTitle">The instruction</h2><details class="info compact"><summary aria-label="About instruction versions">i</summary><p>The supervisor reviews every requirement before publishing. Changing a published instruction requires a new recording and invalidates earlier checks and approvals.</p></details></div><p class="instruction-text" id="instructionText"></p><ol id="requirementList" class="requirements"></ol><p class="caption" id="versionNote"></p><button id="reviseButton" type="button" class="button secondary hidden">Start a new instruction version</button></section>
+              <section class="panel hidden" id="recordPanel" aria-labelledby="recordTitle"><div class="panel-heading"><h2 id="recordTitle">Record your instruction</h2><details class="info compact"><summary aria-label="About voice recording">i</summary><p>Audio is sent to the configured service for transcription and verification. Use the recording only for this task. Your site's recording policy and retention settings apply. Never record bystanders or confidential information unrelated to the task.</p></details></div>
+                <p id="recordHelp"></p><p class="subtle" id="recordCapability"></p>
+                <div id="workerIdentityPanel" class="worker-identity hidden"><label for="workerReference">Worker name or badge</label><input id="workerReference" maxlength="120" autocomplete="off" spellcheck="false" placeholder="Enter the worker’s name or badge"><p class="caption" id="workerReferenceHelp">Identify the worker whose own words you are recording.</p></div>
+                <div id="consentArea"><div class="disclosure" id="recordDisclosure"></div><label class="check-label"><input type="checkbox" id="recordConsent"><span id="recordConsentText">I have read this disclosure and consent to this recording and its processing for this task.</span></label><p class="caption" id="consentVersion"></p></div>
+                <div class="record-state hidden" id="recordState" role="status"><span class="record-dot" aria-hidden="true"></span><strong id="recordStateText">Recording</strong><span id="recordTimer">0:00</span></div>
+                <div class="actions"><button class="button" id="recordButton" type="button" disabled>Start recording</button><button class="button" id="stopButton" type="button" hidden>Stop & send securely</button><button class="button secondary" id="cancelRecordingButton" type="button" hidden>Cancel recording</button><button class="button secondary" id="interruptedCancelButton" type="button" hidden>Cancel interrupted recording</button></div>
+                <p class="caption">Up to 2 minutes · 8 MB maximum. Recording stops when you leave this task or hide this page. Canceled audio is discarded.</p>
+              </section>
+              <section class="panel hidden" id="publishPanel" aria-labelledby="publishTitle"><div class="panel-heading"><h2 id="publishTitle">Review before publishing</h2><details class="info compact"><summary aria-label="About reviewing requirements">i</summary><p>Check the transcript against your original instruction. List every action, quantity, limit, safety step, deadline and exception. The worker must demonstrate every published requirement. These checks do not replace your site's permits or safety procedures.</p></details></div>
+                <p id="extractionNotice" class="disclosure hidden"></p><form id="publishForm"><label for="instructionEditor">Instruction transcript</label><textarea id="instructionEditor" rows="5" required maxlength="12000"></textarea><p class="caption">Correct transcription mistakes. A substantive instruction change needs a new voice recording.</p><div class="panel-heading requirement-heading"><label>Requirements to verify</label><button type="button" class="text-button" id="addRequirementButton">+ Add</button></div><div id="requirementEditor"></div><label class="check-label"><input type="checkbox" id="reviewComplete" required><span>I reviewed the full instruction and confirmed that this list includes every requirement.</span></label><button class="button" id="publishButton" type="submit">Publish for worker retelling</button></form>
+              </section>
+            </div>
+            <div>
+              <section class="panel" aria-labelledby="understandingTitle"><div class="panel-heading"><h2 id="understandingTitle">Worker understanding</h2><details class="info compact"><summary aria-label="About verification">i</summary><p id="understandingInfoHelp">The worker explains the task in their own words, by voice. AI compares this recording with every requirement. Unclear or failed checks keep work blocked. A passing check still needs both people to approve the same task version.</p></details></div><div id="understandingContent"></div></section>
+              <section class="panel hidden" id="acknowledgmentPanel" aria-labelledby="acknowledgmentTitle"><h2 id="acknowledgmentTitle">Clarify the differences</h2><p id="acknowledgmentHelp">Discuss every discrepancy with the worker. Acknowledgment opens a fresh worker recording; it does not approve the task.</p><form id="acknowledgmentForm"><label for="correctionText">Correction explained to the worker</label><textarea id="correctionText" rows="4" required maxlength="6000" placeholder="Describe the correction and what the worker must explain again."></textarea><button class="button" id="acknowledgeButton" type="submit">Acknowledge & request a new recording</button></form></section>
+              <section class="panel hidden" id="correctionPanel" aria-labelledby="correctionTitle"><h2 id="correctionTitle">Supervisor correction</h2><p id="correctionDisplay" class="instruction-text"></p><p class="caption" id="correctionRerecordHelp">Explain the whole task again in a new recording, including the corrected details.</p></section>
+              <section class="panel hidden" id="approvalsPanel" aria-labelledby="approvalsTitle"><div class="panel-heading"><h2 id="approvalsTitle">Human approvals</h2><details class="info compact"><summary aria-label="About approvals and release">i</summary><p id="approvalInfoHelp">Each assigned participant approves the exact instruction version and passing worker attempt shown here. A changed instruction or new attempt requires fresh approvals. Only the assigned supervisor can release work after both approvals and all release checks pass.</p></details></div><p id="approvalScope" class="caption"></p><ul class="approval-list" id="approvalList"></ul><label class="check-label hidden" id="approvalConsentLabel"><input type="checkbox" id="approvalConsent"><span id="approvalStatement"></span></label><div class="actions"><button class="button" type="button" id="approveButton" disabled>Approve this version</button><button class="button secondary hidden" type="button" id="withdrawButton">Withdraw my approval</button></div><div id="releaseArea" class="release-area hidden"><p id="releaseHelp"></p><button class="button" id="releaseButton" type="button" disabled>Release to work</button></div></section>
+              <section class="panel"><details id="historyDetails"><summary class="history-summary">Activity history</summary><ol id="historyList" class="history-list"></ol></details></section>
+            </div>
+          </div>
+        </section>
+        <section id="demoPage" class="hidden" aria-labelledby="demoTitle">
+          <button class="back-button" id="demoBackButton" type="button">← All tasks</button>
+          <div class="section-heading detail-heading"><div><p class="eyebrow">PRERECORDED DEMO</p><h1 id="demoTitle"></h1></div><span class="status waiting" id="demoStatus"></span></div>
+          <div class="demo-disclosure"><span>Sample voices · Demo comparison</span><details class="info compact"><summary aria-label="About prerecorded examples">i</summary><p>These are prepared examples with prerecorded synthetic sample voices and scripted comparisons. No microphone or live AI is used. No real worker consent or work release is recorded by these examples.</p></details></div>
+          <div id="demoNextStep" class="next-step" role="status"></div><p class="caption freshness-note" id="demoFreshness" aria-live="polite"></p>
+          <div class="detail-grid">
+            <div>
+              <section class="panel" aria-labelledby="demoInstructionTitle"><div class="panel-heading"><h2 id="demoInstructionTitle">What Project manager asked</h2><span class="demo-badge">Sample voice</span></div><audio id="demoInstructionAudio" controls preload="none" controlslist="nodownload" aria-label="Sample Project manager voice"></audio><p id="demoInstruction" class="instruction-text"></p><ol id="demoRequirements" class="requirements"></ol><p class="caption">This instruction is preloaded for the example. Project manager confirmation happens after a matching worker example.</p></section>
+              <section id="demoResponsePanel" class="panel hidden" aria-labelledby="demoResponseTitle"><h2 id="demoResponseTitle">Choose a worker example</h2><p id="demoResponseHelp"></p><label for="demoVariant" class="demo-field-label">Worker explanation</label><select id="demoVariant"></select><p class="caption sample-caption">Sample worker voice</p><audio id="demoSelectedAudio" controls preload="none" controlslist="nodownload" aria-label="Selected sample worker voice"></audio><p id="demoSelectedTranscript" class="transcript"></p><button class="button full" id="demoAttemptButton" type="button">OK — compare this example</button></section>
+              <section id="demoCorrectionPanel" class="panel hidden" aria-labelledby="demoCorrectionTitle"><h2 id="demoCorrectionTitle">Explain the difference</h2><p>This prepared correction shows what the Supervisor explains to the worker in the example. Review or edit it, then continue to a fresh example of the worker’s understanding.</p><label class="demo-field-label" for="demoCorrectionText">Demo correction</label><textarea id="demoCorrectionText" rows="4" maxlength="6000"></textarea><button class="button full" id="demoAcknowledgeButton" type="button">OK — acknowledge correction</button></section>
+              <section id="demoPreviousCorrectionPanel" class="panel hidden"><h2>Latest demo correction</h2><p class="instruction-text" id="demoPreviousCorrection"></p></section>
+            </div>
+            <div>
+              <section class="panel" aria-labelledby="demoComparisonTitle"><div class="panel-heading"><h2 id="demoComparisonTitle">Demo comparison</h2><span class="demo-badge">Prepared result</span></div><div id="demoComparison"></div></section>
+              <section class="panel hidden" id="demoApprovalsPanel" aria-labelledby="demoApprovalsTitle"><h2 id="demoApprovalsTitle">Confirm the demo</h2><p>Each role confirms this matching example separately.</p><ul id="demoApprovalList" class="approval-list"></ul><p id="demoApprovalStatement" class="caption"></p><button class="button full hidden" id="demoApproveButton" type="button">OK — confirm</button><p class="disclosure hidden" id="demoCompleteMessage">Demo complete. Both confirmations were saved for this example. This preview does not release real work.</p></section>
+              <section class="panel"><div class="panel-heading"><h2>Try it again</h2></div><p class="caption">Repeat this demo with fresh examples and confirmations. Earlier demo activity stays in its history.</p><button class="button secondary hidden" id="demoRestartButton" type="button">Repeat this demo</button><details class="demo-history"><summary>Demo activity</summary><ol id="demoHistory" class="history-list"></ol></details></section>
+            </div>
+          </div>
+        </section>
+        <section id="aboutPage" class="hidden" aria-labelledby="aboutTitle"><div class="panel narrow"><p class="eyebrow">HOW IT WORKS</p><h1 id="aboutTitle">A clear handoff, step by step.</h1><ol class="workflow"><li><strong>Supervisor records and reviews.</strong><span>Record the instruction with consent, check the transcript, and publish all requirements.</span></li><li><strong id="aboutRetellingTitle">Worker retells on a second device.</strong><span id="aboutRetellingHelp">The assigned worker signs in and records what they understand, in their own words.</span></li><li><strong>AI compares every requirement.</strong><span>Missing, conflicting or uncertain details keep the task blocked.</span></li><li><strong id="aboutCorrectionTitle">Supervisor explains corrections.</strong><span id="aboutCorrectionHelp">Acknowledge the differences and document the correction. The worker must record again.</span></li><li><strong>Both approve the passing attempt.</strong><span id="aboutApprovalsHelp">Each person approves the same instruction version and worker recording.</span></li><li><strong>Supervisor releases the task.</strong><span>Only a released task can proceed through this app's workflow. Follow all other required workplace approvals and procedures.</span></li></ol><p class="disclosure" id="aboutDisclosure">An AI check supports communication. It does not grant a permit, certify that a task is safe, or replace required workplace approvals. Development and unconfigured environments cannot release work.</p></div></section>
+      </div>
+    </main>
+    <footer>EchoCheck AI <span aria-hidden="true">·</span> Version 0.5</footer>
+  </div>
+</body>
+</html>

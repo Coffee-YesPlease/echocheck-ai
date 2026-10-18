@@ -1,0 +1,286 @@
+{
+  "schema_version": 1,
+  "source": "locally_generated_synthetic_sample_voices",
+  "files": {
+    "audio/demo-01-carton-quantities/correct.wav": {
+      "sha256": "45b8458d6e8a11f742f5026cb3bc5bc9109c5ed7fcbb3e56034d2d6f8b699bef",
+      "bytes": 238688,
+      "mime": "audio/wav",
+      "transcript_sha256": "8210c48cd9dfe680b1082adaf6782df966426b3facc0fc12a98ff2569a51f505",
+      "voice": "Daniel",
+      "duration_seconds": 7.331
+    },
+    "audio/demo-01-carton-quantities/corrected.wav": {
+      "sha256": "846da2b3126523c94ad1eba8709e42ccdf01cf7ac19a2389b117cb7329111277",
+      "bytes": 296628,
+      "mime": "audio/wav",
+      "transcript_sha256": "fd106ba010311b24fdcb1b3749e4d0c6d09646de055d51d8f02d57f2c0fa6ad6",
+      "voice": "Daniel",
+      "duration_seconds": 9.142
+    },
+    "audio/demo-01-carton-quantities/incorrect.wav": {
+      "sha256": "a2cf9c2bc2f54ba0deecd30abdf7ad2bec135bc095e92d71c073315f8b9469a9",
+      "bytes": 238688,
+      "mime": "audio/wav",
+      "transcript_sha256": "e47fb5fdd58da76fb6195e2138d0c71b4eae99ffc935b49f18f9ad27d539d880",
+      "voice": "Daniel",
+      "duration_seconds": 7.331
+    },
+    "audio/demo-01-carton-quantities/instruction.wav": {
+      "sha256": "a652f008b75b6074a3ef52656be377a23978183749ac8bd705f2fa078be958e7",
+      "bytes": 195792,
+      "mime": "audio/wav",
+      "transcript_sha256": "be7e42f0adaa34ca8d37b603bcfd4926973dc9b8e57912bfdfc1705c49dbefe0",
+      "voice": "Samantha",
+      "duration_seconds": 5.99
+    },
+    "audio/demo-01-carton-quantities/still_incorrect.wav": {
+      "sha256": "17c690073621a2aa9324e74431311d1a6f4e20b34ad90d67c4e652fc528fe87e",
+      "bytes": 229400,
+      "mime": "audio/wav",
+      "transcript_sha256": "ba329c45ef653f55e7097524017fb3874c53d772d55399de69baf39fd48b59f5",
+      "voice": "Daniel",
+      "duration_seconds": 7.041
+    },
+    "audio/demo-02-every-carton/correct.wav": {
+      "sha256": "592f687fc4c30fb1fcc2e08b21d7b7a6473967fd368fa4173e1e544d9225e986",
+      "bytes": 336398,
+      "mime": "audio/wav",
+      "transcript_sha256": "b8600bf47a8d79ef236f92938031cb5dfaca1aa7edfc9286096e3313cb6bc6d1",
+      "voice": "Daniel",
+      "duration_seconds": 10.384
+    },
+    "audio/demo-02-every-carton/corrected.wav": {
+      "sha256": "d6e099a04ebf807f1a8bfa9ae78b7dfd4f546fd8cb03b2cbdc907303b24d3dd7",
+      "bytes": 394338,
+      "mime": "audio/wav",
+      "transcript_sha256": "486be08a601f8291ec5483880dd6998a22e425d31269b144b5fe06916ecdcdba",
+      "voice": "Daniel",
+      "duration_seconds": 12.195
+    },
+    "audio/demo-02-every-carton/incorrect.wav": {
+      "sha256": "b6aa760f56a58a4b1cdb072d7898c630768aa9592114bedbf41f09015d7088c8",
+      "bytes": 253548,
+      "mime": "audio/wav",
+      "transcript_sha256": "ef4eefd9839c13375ce804e64ab4e0c73d9b18b80f26a55215ed24d392b97a7e",
+      "voice": "Daniel",
+      "duration_seconds": 7.795
+    },
+    "audio/demo-02-every-carton/instruction.wav": {
+      "sha256": "14418c0323606560625620e25dd3358cc23e48ddb154f914902fa868a4fbcfcf",
+      "bytes": 288584,
+      "mime": "audio/wav",
+      "transcript_sha256": "5e673b3b36f77bea8d318eca320157d3100ac7d9777d15fe68a0955aec9233af",
+      "voice": "Samantha",
+      "duration_seconds": 8.89
+    },
+    "audio/demo-02-every-carton/still_incorrect.wav": {
+      "sha256": "0b2c27a7b209ba69ba44ccdbc48d73c6cb82d9eac4dfd89e02ce996c76ad0ccc",
+      "bytes": 341970,
+      "mime": "audio/wav",
+      "transcript_sha256": "f32c9ea386eab91ae9b6dc72d2364db26d55a3104d3eacd46c5d050e14a6ceed",
+      "voice": "Daniel",
+      "duration_seconds": 10.559
+    },
+    "audio/demo-03-lot-labels/correct.wav": {
+      "sha256": "c27ff7791cd9e82ec6d61ae382bd4bb9458c2f2ec6e46b0b2a32c733064c6416",
+      "bytes": 289586,
+      "mime": "audio/wav",
+      "transcript_sha256": "ec8bdbe2c38260ebd8eabbce16173076bbdbef5c4ae1899bac313a48a77b33ae",
+      "voice": "Daniel",
+      "duration_seconds": 8.922
+    },
+    "audio/demo-03-lot-labels/corrected.wav": {
+      "sha256": "34f0da696c7bc0d40af9631ca8a6578fd52c69ad2e8c7b2da197ae985033b697",
+      "bytes": 347526,
+      "mime": "audio/wav",
+      "transcript_sha256": "cd16762d2108a72a879f8dabc1e449e0dbd16e85cd03ccada60a8c34a161ce3d",
+      "voice": "Daniel",
+      "duration_seconds": 10.732
+    },
+    "audio/demo-03-lot-labels/incorrect.wav": {
+      "sha256": "e73badce3202e6458e65f60213767756dd971018dd5fa2234ee60ff279c67827",
+      "bytes": 272868,
+      "mime": "audio/wav",
+      "transcript_sha256": "96e38abb189a7549b4e0c25afea090cca6f777d4263e293e143eea35e8cc3d44",
+      "voice": "Daniel",
+      "duration_seconds": 8.399
+    },
+    "audio/demo-03-lot-labels/instruction.wav": {
+      "sha256": "bb8943f7f32af16e2d933fc48cd03c65b42e46aad88e9d178ebe2f0be995efd8",
+      "bytes": 237348,
+      "mime": "audio/wav",
+      "transcript_sha256": "30a0accb36199c322892abd4c6fb87e4479ccb1198ddc19aaa27f9eb482ee900",
+      "voice": "Samantha",
+      "duration_seconds": 7.289
+    },
+    "audio/demo-03-lot-labels/still_incorrect.wav": {
+      "sha256": "c32583478d91c87a9041faa3ff52b955f6e36e6fde650032ebfda19fa4dc5100",
+      "bytes": 293672,
+      "mime": "audio/wav",
+      "transcript_sha256": "879e05ff19c25c9c19aa9187e4e399dbbd4797d2593b39b532533904c7f1715a",
+      "voice": "Daniel",
+      "duration_seconds": 9.049
+    },
+    "audio/demo-04-order-and-time/correct.wav": {
+      "sha256": "92abf31c7eb9b0f1636a05790763eda433113d733a3f1de3a5f04c8ac77c6139",
+      "bytes": 278068,
+      "mime": "audio/wav",
+      "transcript_sha256": "4ef73e680b868a99064b3dc0d2042fc27ca330d00222742c51e0c045e215717c",
+      "voice": "Daniel",
+      "duration_seconds": 8.562
+    },
+    "audio/demo-04-order-and-time/corrected.wav": {
+      "sha256": "e2cf857b476c203f256fac7b0dcc08da88c618ee44d8d1735a64cef899bcf6fb",
+      "bytes": 336010,
+      "mime": "audio/wav",
+      "transcript_sha256": "bfc360f2ddc1957d29377145e4001c7058de009072a143eddae1c8c4bed423bb",
+      "voice": "Daniel",
+      "duration_seconds": 10.372
+    },
+    "audio/demo-04-order-and-time/incorrect.wav": {
+      "sha256": "a7f264967d19ec0c90f1aaf26ac2a6090a950e39317be2ca564c0b650468044e",
+      "bytes": 279926,
+      "mime": "audio/wav",
+      "transcript_sha256": "84ce3415cc4d5036cc5a9239054d6a24d33332f24cbfc5c042e46d62fed2fff0",
+      "voice": "Daniel",
+      "duration_seconds": 8.62
+    },
+    "audio/demo-04-order-and-time/instruction.wav": {
+      "sha256": "6f6276b4d596bb7c695bb846a8fe52cdd84bb89e1037310af7adf7da7281284e",
+      "bytes": 229600,
+      "mime": "audio/wav",
+      "transcript_sha256": "c30681ff763a62297b33c5fa9704a7ba3b04ef5a3aa14f75d7235460ca497c3b",
+      "voice": "Samantha",
+      "duration_seconds": 7.047
+    },
+    "audio/demo-04-order-and-time/still_incorrect.wav": {
+      "sha256": "b662b9ff8f6b25ce41c8b78c70a8e388250b70b78a61b5110ad27442b733e776",
+      "bytes": 276954,
+      "mime": "audio/wav",
+      "transcript_sha256": "fd55c4c25f273ffb0fb210a8426e06da815d15f10bb482c01e784581dd572700",
+      "voice": "Daniel",
+      "duration_seconds": 8.527
+    },
+    "audio/demo-05-destination-and-extras/correct.wav": {
+      "sha256": "cccc15acf8597c36e2d6a6a1096fdefcf990c965d0e5337b27995784ca28900f",
+      "bytes": 229772,
+      "mime": "audio/wav",
+      "transcript_sha256": "092fdfa80e04bd577b22d48d6aad9ac1d0db928960da09ce676149c3c7aa38d0",
+      "voice": "Daniel",
+      "duration_seconds": 7.052
+    },
+    "audio/demo-05-destination-and-extras/corrected.wav": {
+      "sha256": "93f20360ed4cbce4c690a30ed3be2eab72e61ea4f4e8dc5611833195f88959f8",
+      "bytes": 287712,
+      "mime": "audio/wav",
+      "transcript_sha256": "43e61a5ea3d18851407a9f81448fc83e9d6565565dd984aa27e4c45e3628d775",
+      "voice": "Daniel",
+      "duration_seconds": 8.863
+    },
+    "audio/demo-05-destination-and-extras/incorrect.wav": {
+      "sha256": "c11124c6b6b72bf721d2361ecf591ef2aea1315a5276f7ed21752dea2f2f653e",
+      "bytes": 323394,
+      "mime": "audio/wav",
+      "transcript_sha256": "74aafc2cc052923ace5d377c690a22ab0602cc489870f181fe3ae3996687bbda",
+      "voice": "Daniel",
+      "duration_seconds": 9.978
+    },
+    "audio/demo-05-destination-and-extras/instruction.wav": {
+      "sha256": "7c8ebd65552e0e09e1b419b2c1a29ec6f55fe6f504299b1db8f09a03cca0d944",
+      "bytes": 184420,
+      "mime": "audio/wav",
+      "transcript_sha256": "16a9d31f82e54b37d905b5d68d91ad9a5a0dd849932e9c3171938882624a9899",
+      "voice": "Samantha",
+      "duration_seconds": 5.635
+    },
+    "audio/demo-05-destination-and-extras/still_incorrect.wav": {
+      "sha256": "16a5d29feee23ad5902ea563580940ae6ad6ca1d748b7ebdc533a2de977fe7be",
+      "bytes": 324880,
+      "mime": "audio/wav",
+      "transcript_sha256": "29703b3aff5b499815a41ec8cdc86b0c104aeba051e660f5b8b0ebc017498ef5",
+      "voice": "Daniel",
+      "duration_seconds": 10.024
+    },
+    "audio/demo-06-sorting-and-negation/correct.wav": {
+      "sha256": "2f113c27bf643a0ee0cbfb7047f420633ce209457f71c44a16715b54658e1d6b",
+      "bytes": 334912,
+      "mime": "audio/wav",
+      "transcript_sha256": "24b0035dacb98b6d930ed103211086fca30929dee8d5922bd4f2fa7d7293fa82",
+      "voice": "Daniel",
+      "duration_seconds": 10.338
+    },
+    "audio/demo-06-sorting-and-negation/corrected.wav": {
+      "sha256": "0171472d6a9fbd6dcc1b78dedeeaf14bcc473f5812675082fe7210848363d0f1",
+      "bytes": 392852,
+      "mime": "audio/wav",
+      "transcript_sha256": "9664bfd1fcfa8f760049fe2ae02933dc0977bf69d5079e2712c6d5fec98e43ce",
+      "voice": "Daniel",
+      "duration_seconds": 12.149
+    },
+    "audio/demo-06-sorting-and-negation/incorrect.wav": {
+      "sha256": "490a34e1dac92e80a3b22878f21614e696c3a10b9eb4e90088518409aa43cb57",
+      "bytes": 308534,
+      "mime": "audio/wav",
+      "transcript_sha256": "5b9e4d49a59ed770a18a09e804a2a821a24b618927deea6ad274d6f8174dd66b",
+      "voice": "Daniel",
+      "duration_seconds": 9.514
+    },
+    "audio/demo-06-sorting-and-negation/instruction.wav": {
+      "sha256": "08d6bc189307d72f7b73d05c09c1abfc12ad49643b6a34c7dc4faab8160fdd08",
+      "bytes": 289732,
+      "mime": "audio/wav",
+      "transcript_sha256": "c6841f5041fa33b460135473fe7b5a26705313a20f8a6d78662317c730227064",
+      "voice": "Samantha",
+      "duration_seconds": 8.926
+    },
+    "audio/demo-06-sorting-and-negation/still_incorrect.wav": {
+      "sha256": "2cecfd7df39e2e596c02df78db4c63d3ee1a2fa4f86367acad68a537718f2b89",
+      "bytes": 336026,
+      "mime": "audio/wav",
+      "transcript_sha256": "9646bb7c843207a4af0fd002e81226982849b5cccbe6aa91761d26b32a5390cd",
+      "voice": "Daniel",
+      "duration_seconds": 10.373
+    },
+    "audio/demo-07-uncertain-quantity/correct.wav": {
+      "sha256": "219a1c4df857c6e678b03cce4a351f10bd647f131f8bb065c65ae527c91ffccb",
+      "bytes": 319722,
+      "mime": "audio/wav",
+      "transcript_sha256": "7342c4b84e6a8c2231e7fc68f190ba5ea3d1520b3ee6f1273fbf478b45536057",
+      "voice": "Daniel",
+      "duration_seconds": 9.863
+    },
+    "audio/demo-07-uncertain-quantity/corrected.wav": {
+      "sha256": "1fa06ba797d089b8e4439c8e020dec766efb5ad6c553b30e9ad4e2b44cc5747e",
+      "bytes": 377620,
+      "mime": "audio/wav",
+      "transcript_sha256": "22af42e6f162a241f8efeaff24c7ea40c154cc552dfbab6566ffc48399ba2ef7",
+      "voice": "Daniel",
+      "duration_seconds": 11.673
+    },
+    "audio/demo-07-uncertain-quantity/incorrect.wav": {
+      "sha256": "64079bc246f9aaeca446677c33164ea5feef9fca4017253cb99fe7f28d74835b",
+      "bytes": 305604,
+      "mime": "audio/wav",
+      "transcript_sha256": "44385e43bdc34e53f1ca7c8c6a729cc5848d799831e16102747d517a95633c10",
+      "voice": "Daniel",
+      "duration_seconds": 9.422
+    },
+    "audio/demo-07-uncertain-quantity/instruction.wav": {
+      "sha256": "818729c6c679254e7f1394518a58806b03fa57cb643a61b084ca7be2894e1c18",
+      "bytes": 240374,
+      "mime": "audio/wav",
+      "transcript_sha256": "0c47634c5f6ef4baf10717dbe56b6698a990b355bccd3373694ee79949eddf53",
+      "voice": "Samantha",
+      "duration_seconds": 7.384
+    },
+    "audio/demo-07-uncertain-quantity/still_incorrect.wav": {
+      "sha256": "1a885e50f94c5d39778066241f6b999609ca1ddf253a76cc3e0fcc3dc1e8a7cd",
+      "bytes": 383996,
+      "mime": "audio/wav",
+      "transcript_sha256": "1100908aa830ac544d495aaa935858424d6a6461d5ad3c9c5336542b5c15aa39",
+      "voice": "Daniel",
+      "duration_seconds": 11.872
+    }
+  }
+}

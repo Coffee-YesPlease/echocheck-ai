@@ -1,0 +1,12 @@
+.git
+.venv
+.env
+work
+outputs
+*.db
+*.db-*
+__pycache__
+.pytest_cache
+tests
+dataset
+docs

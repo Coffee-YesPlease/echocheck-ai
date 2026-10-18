@@ -1,0 +1,902 @@
+[
+  {
+    "id": "EC-001",
+    "category": "equivalent",
+    "instruction": "Pack 16 cartons with 24 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 16 cartons with 24 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-002",
+    "category": "equivalent",
+    "instruction": "Pack 10 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 10 cartons with 18 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-003",
+    "category": "equivalent",
+    "instruction": "Pack 20 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 20 cartons with 18 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-004",
+    "category": "equivalent",
+    "instruction": "Pack 6 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 6 cartons with 12 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-005",
+    "category": "equivalent",
+    "instruction": "Pack 20 cartons with 24 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 20 cartons with 24 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-006",
+    "category": "equivalent",
+    "instruction": "Pack 16 cartons with 18 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 16 cartons with 18 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-007",
+    "category": "equivalent",
+    "instruction": "Pack 20 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 20 cartons with 24 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-008",
+    "category": "equivalent",
+    "instruction": "Pack 16 cartons with 6 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 16 cartons with 6 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-009",
+    "category": "equivalent",
+    "instruction": "Pack 8 cartons with 12 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 8 cartons with 12 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-010",
+    "category": "equivalent",
+    "instruction": "Pack 16 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 16 cartons with 12 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-011",
+    "category": "equivalent",
+    "instruction": "Pack 16 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 16 cartons with 6 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-012",
+    "category": "equivalent",
+    "instruction": "Pack 20 cartons with 6 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 20 cartons with 6 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-013",
+    "category": "equivalent",
+    "instruction": "Pack 12 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 12 cartons with 6 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-014",
+    "category": "equivalent",
+    "instruction": "Pack 12 cartons with 12 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 12 cartons with 12 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-015",
+    "category": "equivalent",
+    "instruction": "Pack 12 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Prepare 12 cartons with 18 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-016",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 12 cartons with 18 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 18 cartons with 12 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-017",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 6 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 18 cartons with 6 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-018",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 12 cartons with 18 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 18 cartons with 12 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-019",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 6 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 24 cartons with 6 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-020",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 6 cartons with 12 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 6 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-021",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 16 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 18 cartons with 16 bottles each, blue labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-022",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 10 cartons with 6 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 10 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-023",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 8 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 8 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-024",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 20 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 18 cartons with 20 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-025",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 10 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 10 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-026",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 6 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 18 cartons with 6 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-027",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 6 cartons with 6 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 6 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-028",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 6 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 24 cartons with 6 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-029",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 10 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 24 cartons with 10 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-030",
+    "category": "quantity_mismatch",
+    "instruction": "Pack 6 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 6 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-031",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 10 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 6 bottles each. Use red labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-032",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 20 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 20 cartons with 24 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-033",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 16 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 12 bottles each. Use green labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-034",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 12 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 24 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-035",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 8 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 8 cartons with 18 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-036",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 20 cartons with 6 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 20 cartons with 6 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-037",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 6 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 18 bottles each. Use green labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-038",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 10 cartons with 6 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 6 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-039",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 12 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 6 bottles each. Use red labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-040",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 10 cartons with 18 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 18 bottles each. Use red labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-041",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 12 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 24 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-042",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 16 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 6 bottles each. Use red labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-043",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 20 cartons with 12 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 20 cartons with 12 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-044",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 16 cartons with 18 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 18 bottles each. Use red labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-045",
+    "category": "unconfirmed_step",
+    "instruction": "Pack 8 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 8 cartons with 18 bottles each. Use blue labels and dispatch by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-046",
+    "category": "wrong_label",
+    "instruction": "Pack 20 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 20 cartons with 24 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-047",
+    "category": "wrong_label",
+    "instruction": "Pack 12 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 24 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-048",
+    "category": "wrong_label",
+    "instruction": "Pack 16 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 24 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-049",
+    "category": "wrong_label",
+    "instruction": "Pack 20 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 20 cartons with 24 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-050",
+    "category": "wrong_label",
+    "instruction": "Pack 12 cartons with 12 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 12 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-051",
+    "category": "wrong_label",
+    "instruction": "Pack 12 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 18 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-052",
+    "category": "wrong_label",
+    "instruction": "Pack 10 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 6 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-053",
+    "category": "wrong_label",
+    "instruction": "Pack 16 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 24 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-054",
+    "category": "wrong_label",
+    "instruction": "Pack 10 cartons with 12 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 12 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-055",
+    "category": "wrong_label",
+    "instruction": "Pack 8 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 8 cartons with 18 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-056",
+    "category": "wrong_label",
+    "instruction": "Pack 8 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 8 cartons with 12 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-057",
+    "category": "wrong_label",
+    "instruction": "Pack 12 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 18 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-058",
+    "category": "wrong_label",
+    "instruction": "Pack 16 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 6 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-059",
+    "category": "wrong_label",
+    "instruction": "Pack 6 cartons with 6 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 6 bottles each, green labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-060",
+    "category": "wrong_label",
+    "instruction": "Pack 16 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 12 bottles each, red labels, inspect every carton, ready by 4 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-061",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 12 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 12 cartons with 24 bottles each, red labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-062",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 8 cartons with 24 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 8 cartons with 24 bottles each, green labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-063",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 6 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 18 bottles each, green labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-064",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 8 cartons with 6 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 8 cartons with 6 bottles each, green labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-065",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 10 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 18 bottles each, blue labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-066",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 6 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 18 bottles each, blue labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-067",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 16 cartons with 6 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 6 bottles each, blue labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-068",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 6 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 24 bottles each, red labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-069",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 10 cartons with 12 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 12 bottles each, blue labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-070",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 6 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 24 bottles each, red labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-071",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 8 cartons with 6 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 8 cartons with 6 bottles each, green labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-072",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 6 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 6 cartons with 24 bottles each, blue labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-073",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 20 cartons with 6 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 20 cartons with 6 bottles each, blue labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-074",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 16 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 16 cartons with 18 bottles each, green labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-075",
+    "category": "sequence_or_deadline",
+    "instruction": "Pack 10 cartons with 18 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "Pack 10 cartons with 18 bottles each, red labels, inspect every carton, ready by 5 PM.",
+    "expected_decision": "clarification_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-076",
+    "category": "multilingual",
+    "instruction": "Pack 16 cartons with 24 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "16 कार्टन में 24-24 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-077",
+    "category": "multilingual",
+    "instruction": "Pack 6 cartons with 18 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "6 कार्टन में 18-18 बोतलें रखनी हैं, नीला लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-078",
+    "category": "multilingual",
+    "instruction": "Pack 20 cartons with 6 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "20 कार्टन में 6-6 बोतलें रखनी हैं, लाल लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-079",
+    "category": "multilingual",
+    "instruction": "Pack 20 cartons with 18 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "20 कार्टन में 18-18 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-080",
+    "category": "multilingual",
+    "instruction": "Pack 10 cartons with 6 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "10 कार्टन में 6-6 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-081",
+    "category": "multilingual",
+    "instruction": "Pack 8 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "8 कार्टन में 12-12 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-082",
+    "category": "multilingual",
+    "instruction": "Pack 10 cartons with 24 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "10 कार्टन में 24-24 बोतलें रखनी हैं, नीला लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-083",
+    "category": "multilingual",
+    "instruction": "Pack 10 cartons with 12 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "10 कार्टन में 12-12 बोतलें रखनी हैं, नीला लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-084",
+    "category": "multilingual",
+    "instruction": "Pack 20 cartons with 24 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "20 कार्टन में 24-24 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-085",
+    "category": "multilingual",
+    "instruction": "Pack 20 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "20 कार्टन में 12-12 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-086",
+    "category": "multilingual",
+    "instruction": "Pack 10 cartons with 12 bottles each. Use blue labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "10 कार्टन में 12-12 बोतलें रखनी हैं, नीला लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-087",
+    "category": "multilingual",
+    "instruction": "Pack 16 cartons with 12 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "16 कार्टन में 12-12 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-088",
+    "category": "multilingual",
+    "instruction": "Pack 6 cartons with 24 bottles each. Use green labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "6 कार्टन में 24-24 बोतलें रखनी हैं, हरा लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-089",
+    "category": "multilingual",
+    "instruction": "Pack 16 cartons with 24 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "16 कार्टन में 24-24 बोतलें रखनी हैं, लाल लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-090",
+    "category": "multilingual",
+    "instruction": "Pack 16 cartons with 12 bottles each. Use red labels, inspect each carton, and dispatch by 4 PM.",
+    "receiver_response": "16 कार्टन में 12-12 बोतलें रखनी हैं, लाल लेबल लगाना है, हर कार्टन की जांच करनी है, शाम 4 बजे तक तैयार करना है।",
+    "expected_decision": "ready_for_confirmation",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-091",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 90.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-092",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 91.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-093",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 92.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-094",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 93.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-095",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 94.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-096",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 95.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-097",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 96.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-098",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 97.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-099",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 98.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  },
+  {
+    "id": "EC-100",
+    "category": "ambiguous_instruction",
+    "instruction": "Prepare the shipment quickly and make sure everything is right. Order reference 99.",
+    "receiver_response": "I will prepare some boxes now.",
+    "expected_decision": "review_required",
+    "source": "synthetic_generated",
+    "annotation_status": "provisional_unreviewed"
+  }
+]

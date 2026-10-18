@@ -1,0 +1,15 @@
+EchoCheck AI v0.4 — 18 October 2026
+
+Full test suite:
+python -m pytest -q -W error -p no:cacheprovider
+175 passed in 87.19s (0:01:27)
+
+Targeted prototype/worker handoff suite:
+35 passed in 29.67s
+18 new handoff cases; 17 existing prototype cases.
+
+Frontend:
+22 DOM contract checks passed.
+JavaScript syntax, HTML ID/reference, CSP and cache version checks passed.
+
+No external provider, real microphone recording, speaker biometrics or plant-noise accuracy validation was performed.
